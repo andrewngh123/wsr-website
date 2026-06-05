@@ -26,3 +26,8 @@ yarn-error.log*
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
+
+# Python (data import script)
+.venv/
+__pycache__/
+*.pyc
