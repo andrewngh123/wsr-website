@@ -32,6 +32,45 @@ export default function AboutPage() {
           </p>
         </section>
 
+        {/* Our Team */}
+        <section>
+          <h2 className="section-title">Our Team</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mt-6">
+            {[
+              {
+                name: 'Nadim Nassif',
+                role: 'Founder',
+                photo: '/staff/Dr.Nadim.png',
+                bio: 'Associate professor of Physical Education and Sports, Department of Psychology, Education & Physical Education, Faculty of Humanities, Notre Dame University, Lebanon.',
+              },
+              {
+                name: 'Andrew Alnghayoui',
+                role: 'Data Analyst',
+                photo: '/staff/Andrew.png',
+                bio: 'More than 6 years of experience in sports data analytics, MBA Sports Management Graduate from UCAM (Murcia, Spain). B.E. in Mechanical Engineering at NDU, Lebanon.',
+              },
+              {
+                name: 'Maya Gabriel',
+                role: 'Project Assistant',
+                photo: '/staff/Maya.png',
+                bio: 'Dual B.A. in Advertising and Marketing and in Physical Education and Sport at NDU, Lebanon. MSc. in Olympic Studies, Olympic Education, Organization and Management of Olympic Events. University of Peloponnese — Greece.',
+              },
+            ].map((member) => (
+              <div key={member.name} className="flex flex-col items-center text-center">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={member.photo}
+                  alt={member.name}
+                  className="w-36 h-36 rounded-full object-cover shadow-md ring-4 ring-wsr-light"
+                />
+                <h3 className="font-bold text-wsr-navy mt-4">{member.name}</h3>
+                <p className="text-wsr-blue text-sm font-medium">{member.role}</p>
+                <p className="text-gray-500 text-sm leading-relaxed mt-3">{member.bio}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
         {/* About WRCES */}
         <section>
           <h2 className="section-title">About the WRCES</h2>
@@ -73,10 +112,10 @@ export default function AboutPage() {
           <h2 className="section-title">Our Affiliates</h2>
           <div className="flex flex-wrap gap-6 items-center mt-4">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="https://sportsrankings.world/ndu_logo1.png" alt="NDU Logo" className="h-16 object-contain" />
+            <img src="/ndu_logo1.png" alt="NDU Logo" className="h-16 object-contain" />
             <a href="https://www.ndu.edu.lb/international-center-for-sport-policy-and-governance/home" target="_blank" rel="noopener noreferrer">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="https://sportsrankings.world/ICSPG-final-logo.png" alt="ICSPG Logo" className="h-16 object-contain" />
+              <img src="/ICSPG-final-logo.png" alt="ICSPG Logo" className="h-16 object-contain" />
             </a>
           </div>
         </section>

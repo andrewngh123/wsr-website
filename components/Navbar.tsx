@@ -19,10 +19,9 @@ export default function Navbar() {
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
-          {/* Using the live logo from current site — replace with local file later */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="https://sportsrankings.world/logo-w.svg"
+            src="/logo-w.svg"
             alt="WSR Logo"
             className="h-8 w-auto"
           />
@@ -37,11 +36,6 @@ export default function Navbar() {
               </Link>
             </li>
           ))}
-          <li>
-            <a href="mailto:nnassif@ndu.edu.lb" className="nav-link">
-              Contact Us
-            </a>
-          </li>
         </ul>
 
         {/* Social icons — desktop */}
@@ -86,9 +80,6 @@ export default function Navbar() {
                 </Link>
               </li>
             ))}
-            <li>
-              <a href="mailto:nnassif@ndu.edu.lb" className="nav-link">Contact Us</a>
-            </li>
           </ul>
         </div>
       )}

@@ -8,7 +8,7 @@ export default function Footer() {
           {/* Logo + description */}
           <div className="md:col-span-1">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="https://sportsrankings.world/logo-w.svg" alt="WSR Logo" className="h-10 mb-4" />
+            <img src="/logo-w.svg" alt="WSR Logo" className="h-10 mb-4" />
             <p className="text-sm leading-relaxed text-white/60">
               World Sports Rankings (WSR) is a platform evaluating the local and international sport
               policies and strategies implemented by National Sports Governing Bodies, sports leagues,
@@ -64,10 +64,10 @@ export default function Footer() {
         {/* Affiliates */}
         <div className="flex items-center gap-6 justify-center py-6 border-t border-white/10">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="https://sportsrankings.world/ndu_logo1.png" alt="NDU Logo" className="h-10 object-contain brightness-0 invert opacity-70" />
+          <img src="/ndu_logo1.png" alt="NDU Logo" className="h-10 object-contain brightness-0 invert opacity-70" />
           <a href="https://www.ndu.edu.lb/international-center-for-sport-policy-and-governance/home" target="_blank" rel="noopener noreferrer">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="https://sportsrankings.world/ICSPG-final-logo.png" alt="ICSPG Logo" className="h-10 object-contain brightness-0 invert opacity-70" />
+            <img src="/ICSPG-final-logo.png" alt="ICSPG Logo" className="h-10 object-contain brightness-0 invert opacity-70" />
           </a>
         </div>
 

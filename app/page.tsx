@@ -126,25 +126,25 @@ export default async function HomePage() {
                 slug: 'wrces',
                 label: 'WRCES',
                 description: 'The World Ranking of Countries in Elite Sport — a holistic and precise evaluation of nations in elite sport.',
-                logo: 'https://sportsrankings.world/rankings/wrces_final_logo_new.svg',
+                logo: '/rankings/wrces_final_logo_new.svg',
               },
               {
                 slug: 'wfcr',
                 label: 'WFCR',
                 description: "The World's Fittest Countries Ranking — an unrivaled research-based tool to measure the fitness of a country.",
-                logo: 'https://sportsrankings.world/rankings/wfcr_logo_new.svg',
+                logo: '/rankings/wfcr_logo_new.svg',
               },
               {
                 slug: 'wspi',
                 label: 'WSPI',
                 description: 'The World Sports Power Index — aims to rank the effect of sports on countries\' geopolitical power.',
-                logo: 'https://sportsrankings.world/rankings/wspi_logo_new.svg',
+                logo: '/rankings/wspi_logo_new.svg',
               },
               {
                 slug: 'wrces_merit',
                 label: 'WRCES Merit',
                 description: 'The WRCES Merit ranking rewards countries that are "punching above their weight" in international sport.',
-                logo: 'https://sportsrankings.world/rankings/wrces_merit_logo_new.svg',
+                logo: '/rankings/wrces_merit_logo_new.svg',
               },
             ].map((r) => (
               <Link
