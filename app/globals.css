@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-white text-gray-900 font-sans;
+  }
+}
+
+@layer components {
+  /* Rank change indicators */
+  .rank-up {
+    @apply text-green-500 text-xs font-semibold;
+  }
+  .rank-down {
+    @apply text-red-500 text-xs font-semibold;
+  }
+  .rank-same {
+    @apply text-gray-400 text-xs;
+  }
+
+  /* Ranking table rows */
+  .ranking-row {
+    @apply border-b border-gray-100 hover:bg-wsr-light transition-colors duration-150;
+  }
+
+  /* Navigation link */
+  .nav-link {
+    @apply text-white/80 hover:text-white transition-colors duration-150 text-sm font-medium;
+  }
+
+  /* Section heading */
+  .section-title {
+    @apply text-2xl md:text-3xl font-bold text-wsr-navy mb-2;
+  }
+
+  /* Primary button */
+  .btn-primary {
+    @apply bg-wsr-accent text-white font-semibold px-6 py-2.5 rounded-lg
+           hover:brightness-110 transition-all duration-150;
+  }
+}
