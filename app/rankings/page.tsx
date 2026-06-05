@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import CountryFlag from '@/components/CountryFlag'
 import RankChange from '@/components/RankChange'
+import { rankingStatus } from '@/lib/format'
 
 // ── Types ────────────────────────────────────────────────────────────────────
 type RankingType = 'wrces' | 'wfcr' | 'wspi' | 'merit'
@@ -80,15 +81,41 @@ const FALLBACK_DATA: Row[] = [
 export default function RankingsPage() {
   const [activeTab, setActiveTab]     = useState<RankingType>('wrces')
   const [continent, setContinent]     = useState('all')
-  const [year, setYear]               = useState(2025)
+  const [year, setYear]               = useState<number | null>(null)
   const [search, setSearch]           = useState('')
   const [rows, setRows]               = useState<Row[]>(FALLBACK_DATA)
   const [loading, setLoading]         = useState(false)
+  const [availableYears, setAvailableYears] = useState<number[]>([])
 
-  // Available years — extend this list as new ranking years are added
-  const availableYears = [2025, 2024, 2023, 2022]
+  // Load the list of available years once on mount, then default to the newest.
+  // (Supabase caps each request, so we page through to capture every year.)
+  useEffect(() => {
+    (async () => {
+      try {
+        const { supabase } = await import('@/lib/supabase')
+        const seen = new Set<number>()
+        const PAGE = 1000
+        for (let from = 0; ; from += PAGE) {
+          const { data, error } = await supabase
+            .from('wrces_rankings')
+            .select('year')
+            .order('year', { ascending: false })
+            .range(from, from + PAGE - 1)
+          if (error || !data || data.length === 0) break
+          data.forEach((r: { year: number }) => seen.add(r.year))
+          if (data.length < PAGE) break
+        }
+        const yrs = Array.from(seen).sort((a, b) => b - a)
+        if (yrs.length) { setAvailableYears(yrs); setYear(yrs[0]) }
+        else { setAvailableYears([2025]); setYear(2025) }
+      } catch {
+        setAvailableYears([2025]); setYear(2025)
+      }
+    })()
+  }, [])
 
   const fetchData = useCallback(async () => {
+    if (year == null) return
     setLoading(true)
     try {
       const { supabase } = await import('@/lib/supabase')
@@ -171,7 +198,7 @@ export default function RankingsPage() {
         <div className="flex flex-wrap gap-3 mb-6 items-center">
           {/* Year */}
           <select
-            value={year}
+            value={year ?? ''}
             onChange={(e) => setYear(Number(e.target.value))}
             className="border border-gray-200 rounded-lg px-4 py-2 text-sm bg-white text-gray-700 shadow-sm"
           >
@@ -250,6 +277,7 @@ export default function RankingsPage() {
 
         <p className="text-center text-xs text-gray-400 mt-6">
           Showing {filtered.length} of {rows.length} countries
+          {year != null && ` · ${year} ${rankingStatus(year)}`}
         </p>
       </div>
     </div>

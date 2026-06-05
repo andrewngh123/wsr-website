@@ -3,6 +3,7 @@ import CountryFlag from '@/components/CountryFlag'
 import RankChange from '@/components/RankChange'
 import RankingLogo from '@/components/RankingLogo'
 import { getTopCountries, getLatestYear } from '@/lib/rankings'
+import { rankingStatus } from '@/lib/format'
 
 // ─── Static fallback data (used when Supabase is not yet connected) ─────────
 const FALLBACK_TOP5 = [
@@ -59,7 +60,7 @@ export default async function HomePage() {
       <section className="max-w-3xl mx-auto px-4 -mt-8 mb-16">
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
           <div className="bg-wsr-blue text-white px-6 py-4 flex items-center justify-between">
-            <span className="font-bold text-sm uppercase tracking-wider">{year} Final Ranking</span>
+            <span className="font-bold text-sm uppercase tracking-wider">{year} {rankingStatus(year)} Ranking</span>
             <Link href="/rankings" className="text-white/70 hover:text-white text-xs underline">
               View all →
             </Link>
