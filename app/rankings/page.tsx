@@ -52,52 +52,37 @@ const CONTINENT_OPTIONS = [
   { code: 'OC', name: 'Oceania' },
 ]
 
-// ── Fallback data (2025, top-206 from CSV) ────────────────────────────────────
-// This is used if Supabase is not yet connected.
-// Once you connect Supabase the live data replaces this automatically.
-const FALLBACK_DATA: Row[] = [
-  { rank: 1,   country_code:'USA', country_name:'USA',                   iso_2:'us', continent_code:'AM', points:2129375, change:null   },
-  { rank: 2,   country_code:'GBR', country_name:'GREAT BRITAIN',          iso_2:'gb', continent_code:'EU', points:1303155, change:'+1'  },
-  { rank: 3,   country_code:'FRA', country_name:'FRANCE',                 iso_2:'fr', continent_code:'EU', points:1293343, change:'-1'  },
-  { rank: 4,   country_code:'ITA', country_name:'ITALY',                  iso_2:'it', continent_code:'EU', points:1131761, change:null   },
-  { rank: 5,   country_code:'JPN', country_name:'JAPAN',                  iso_2:'jp', continent_code:'AS', points:984970,  change:null   },
-  { rank: 6,   country_code:'AUS', country_name:'AUSTRALIA',              iso_2:'au', continent_code:'OC', points:924743,  change:'+3'  },
-  { rank: 7,   country_code:'CHN', country_name:'CHINA',                  iso_2:'cn', continent_code:'AS', points:922625,  change:'-1'  },
-  { rank: 8,   country_code:'ESP', country_name:'SPAIN',                  iso_2:'es', continent_code:'EU', points:896420,  change:'-1'  },
-  { rank: 9,   country_code:'GER', country_name:'GERMANY',                iso_2:'de', continent_code:'EU', points:857681,  change:'-1'  },
-  { rank: 10,  country_code:'BRA', country_name:'BRAZIL',                 iso_2:'br', continent_code:'AM', points:742828,  change:null   },
-  { rank: 11,  country_code:'CAN', country_name:'CANADA',                 iso_2:'ca', continent_code:'AM', points:671755,  change:'+1'  },
-  { rank: 12,  country_code:'KOR', country_name:'SOUTH KOREA',            iso_2:'kr', continent_code:'AS', points:643059,  change:'-1'  },
-  { rank: 13,  country_code:'NED', country_name:'NETHERLANDS',            iso_2:'nl', continent_code:'EU', points:552234,  change:null   },
-  { rank: 14,  country_code:'POL', country_name:'POLAND',                 iso_2:'pl', continent_code:'EU', points:538208,  change:'+8'  },
-  { rank: 15,  country_code:'ARG', country_name:'ARGENTINA',              iso_2:'ar', continent_code:'AM', points:533742,  change:'-1'  },
-  { rank: 16,  country_code:'IND', country_name:'INDIA',                  iso_2:'in', continent_code:'AS', points:528391,  change:null   },
-  { rank: 17,  country_code:'CZE', country_name:'CZECH REPUBLIC',         iso_2:'cz', continent_code:'EU', points:485559,  change:'+1'  },
-  { rank: 18,  country_code:'NZL', country_name:'NEW ZEALAND',            iso_2:'nz', continent_code:'OC', points:483901,  change:'-3'  },
-  { rank: 19,  country_code:'BEL', country_name:'BELGIUM',                iso_2:'be', continent_code:'EU', points:474879,  change:'+4'  },
-  { rank: 20,  country_code:'DEN', country_name:'DENMARK',                iso_2:'dk', continent_code:'EU', points:469564,  change:'+5'  },
-]
+// Supabase table backing each ranking type
+const TABLE_MAP: Record<RankingType, string> = {
+  wrces: 'wrces_rankings',
+  wfcr:  'wfcr_rankings',
+  wspi:  'wspi_rankings',
+  merit: 'merit_rankings',
+}
 
 export default function RankingsPage() {
   const [activeTab, setActiveTab]     = useState<RankingType>('wrces')
   const [continent, setContinent]     = useState('all')
   const [year, setYear]               = useState<number | null>(null)
   const [search, setSearch]           = useState('')
-  const [rows, setRows]               = useState<Row[]>(FALLBACK_DATA)
+  const [rows, setRows]               = useState<Row[]>([])
   const [loading, setLoading]         = useState(false)
   const [availableYears, setAvailableYears] = useState<number[]>([])
 
-  // Load the list of available years once on mount, then default to the newest.
-  // (Supabase caps each request, so we page through to capture every year.)
+  // Load the available years FOR THE ACTIVE RANKING TABLE. Each ranking has its
+  // own set of years (e.g. only WRCES has 2026 so far), so this re-runs whenever
+  // the ranking tab changes. Keeps the current year if it still exists in the
+  // new table, otherwise jumps to that ranking's newest year.
   useEffect(() => {
-    (async () => {
+    let cancelled = false
+    ;(async () => {
       try {
         const { supabase } = await import('@/lib/supabase')
         const seen = new Set<number>()
         const PAGE = 1000
         for (let from = 0; ; from += PAGE) {
           const { data, error } = await supabase
-            .from('wrces_rankings')
+            .from(TABLE_MAP[activeTab])
             .select('year')
             .order('year', { ascending: false })
             .range(from, from + PAGE - 1)
@@ -105,14 +90,16 @@ export default function RankingsPage() {
           data.forEach((r: { year: number }) => seen.add(r.year))
           if (data.length < PAGE) break
         }
+        if (cancelled) return
         const yrs = Array.from(seen).sort((a, b) => b - a)
-        if (yrs.length) { setAvailableYears(yrs); setYear(yrs[0]) }
-        else { setAvailableYears([2025]); setYear(2025) }
+        setAvailableYears(yrs)
+        setYear((prev) => (prev != null && yrs.includes(prev)) ? prev : (yrs[0] ?? null))
       } catch {
-        setAvailableYears([2025]); setYear(2025)
+        if (!cancelled) { setAvailableYears([]); setYear(null) }
       }
     })()
-  }, [])
+    return () => { cancelled = true }
+  }, [activeTab])
 
   // Pre-fill the search box from the ?q=... param passed by the homepage search.
   useEffect(() => {
@@ -125,15 +112,9 @@ export default function RankingsPage() {
     setLoading(true)
     try {
       const { supabase } = await import('@/lib/supabase')
-      const tableMap: Record<RankingType, string> = {
-        wrces: 'wrces_rankings',
-        wfcr:  'wfcr_rankings',
-        wspi:  'wspi_rankings',
-        merit: 'merit_rankings',
-      }
 
       let query = supabase
-        .from(tableMap[activeTab])
+        .from(TABLE_MAP[activeTab])
         .select('rank, country_code, points, change, countries!inner(name, iso_2, continent_code)')
         .eq('year', year)
         .order('rank', { ascending: true })
@@ -154,10 +135,10 @@ export default function RankingsPage() {
           change:         r.change ?? null,
         })))
       } else {
-        setRows(FALLBACK_DATA)
+        setRows([])
       }
     } catch {
-      setRows(FALLBACK_DATA)
+      setRows([])
     } finally {
       setLoading(false)
     }
@@ -256,10 +237,16 @@ export default function RankingsPage() {
               </tr>
             </thead>
             <tbody>
-              {filtered.length === 0 ? (
+              {loading ? (
+                <tr>
+                  <td colSpan={5} className="px-6 py-12 text-center text-gray-400 italic">
+                    Loading…
+                  </td>
+                </tr>
+              ) : filtered.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="px-6 py-12 text-center text-gray-400">
-                    No results found.
+                    No results found for this ranking and year.
                   </td>
                 </tr>
               ) : filtered.map((row) => (
