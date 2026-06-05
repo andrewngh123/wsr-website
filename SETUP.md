@@ -99,6 +99,7 @@ Once set up, you can edit anything by opening the `wsr-website` folder in VS Cod
 - *"Update the accent color from gold to blue"*
 - *"Add a new page called 'Partners'"*
 - *"Update the 2026 rankings data"*
+- *"Mark the 2026 ranking as final"* (flips the homepage label from "Provisional" to "Final" — set `LATEST_FINAL_YEAR` in `lib/format.ts`)
 
 Claude will edit the correct files for you. After saving, Vercel automatically redeploys within ~30 seconds.
 

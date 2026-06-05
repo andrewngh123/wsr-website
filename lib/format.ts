@@ -3,11 +3,23 @@
  * into client components without pulling in the Supabase client.
  */
 
+// ─────────────────────────────────────────────────────────────────────────────
+//  👇 THE ONLY LINE YOU NEED TO CHANGE WHEN A FINAL RANKING IS RELEASED  👇
+//
+//  Set this to the most recent year whose ranking is OFFICIAL / FINAL.
+//  (Finals can be released in December, before the year actually ends.)
+//
+//  • Years up to and including this number show as  "<year> Final Ranking"
+//  • Any later year (the current in-progress season) shows as "<year> Provisional Ranking"
+//
+//  Example: when the 2026 final ranking is released, change 2025 to 2026.
+// ─────────────────────────────────────────────────────────────────────────────
+export const LATEST_FINAL_YEAR = 2025
+
 /**
- * A ranking year is "Provisional" while it is still the current (unfinished)
- * season — i.e. the year hasn't ended yet — and "Final" once it's in the past.
- * e.g. during 2026 → "2026 Provisional Ranking"; in 2027 → "2026 Final Ranking".
+ * Returns whether a given ranking year should be labelled "Final" or
+ * "Provisional", based on LATEST_FINAL_YEAR above.
  */
 export function rankingStatus(year: number): 'Provisional' | 'Final' {
-  return year >= new Date().getFullYear() ? 'Provisional' : 'Final'
+  return year <= LATEST_FINAL_YEAR ? 'Final' : 'Provisional'
 }
