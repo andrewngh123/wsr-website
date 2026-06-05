@@ -114,6 +114,12 @@ export default function RankingsPage() {
     })()
   }, [])
 
+  // Pre-fill the search box from the ?q=... param passed by the homepage search.
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search).get('q')
+    if (q) setSearch(q)
+  }, [])
+
   const fetchData = useCallback(async () => {
     if (year == null) return
     setLoading(true)
@@ -230,6 +236,13 @@ export default function RankingsPage() {
           {loading && <span className="text-xs text-gray-400 italic">Loading…</span>}
         </div>
 
+        {/* Ranking title — "Provisional" for the current season, else "Final" */}
+        {year != null && (
+          <h2 className="text-xl font-bold text-wsr-navy mb-4">
+            {year} {rankingStatus(year)} Ranking
+          </h2>
+        )}
+
         {/* Table */}
         <div className="bg-white rounded-2xl shadow overflow-hidden">
           <table className="w-full text-sm">
@@ -277,7 +290,6 @@ export default function RankingsPage() {
 
         <p className="text-center text-xs text-gray-400 mt-6">
           Showing {filtered.length} of {rows.length} countries
-          {year != null && ` · ${year} ${rankingStatus(year)}`}
         </p>
       </div>
     </div>
