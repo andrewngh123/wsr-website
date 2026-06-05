@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import CountryFlag from '@/components/CountryFlag'
 import RankChange from '@/components/RankChange'
+import RankingLogo from '@/components/RankingLogo'
 import { getTopCountries, getLatestYear } from '@/lib/rankings'
 
 // ─── Static fallback data (used when Supabase is not yet connected) ─────────
@@ -150,8 +151,7 @@ export default async function HomePage() {
                 href={`/rankings?ranking=${r.slug}`}
                 className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow border border-gray-100 flex flex-col items-start gap-3"
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={r.logo} alt={r.label} className="h-12 object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
+                <RankingLogo src={r.logo} alt={r.label} />
                 <h3 className="font-bold text-wsr-navy">{r.label}</h3>
                 <p className="text-xs text-gray-500 leading-relaxed">{r.description}</p>
               </Link>

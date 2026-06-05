@@ -13,7 +13,7 @@
  *   - merit_rankings  (id, year, rank, country_code, points, change)
  */
 
-import { supabase } from './supabase'
+import { supabase, isSupabaseConfigured } from './supabase'
 
 export type RankingType = 'wrces' | 'wfcr' | 'wspi' | 'merit'
 
@@ -51,6 +51,8 @@ export async function getRankings(
   year: number,
   continent?: string,
 ): Promise<RankingRow[]> {
+  if (!isSupabaseConfigured) return []
+
   let query = supabase
     .from(TABLE[type])
     .select(`
@@ -85,6 +87,8 @@ export async function getRankings(
  * Fetch the latest available year for a ranking type.
  */
 export async function getLatestYear(type: RankingType): Promise<number> {
+  if (!isSupabaseConfigured) return new Date().getFullYear() - 1
+
   const { data, error } = await supabase
     .from(TABLE[type])
     .select('year')
@@ -100,6 +104,8 @@ export async function getLatestYear(type: RankingType): Promise<number> {
  * Fetch all available years for a ranking type (for the year dropdown).
  */
 export async function getAvailableYears(type: RankingType): Promise<number[]> {
+  if (!isSupabaseConfigured) return []
+
   const { data, error } = await supabase
     .from(TABLE[type])
     .select('year')
@@ -114,6 +120,8 @@ export async function getAvailableYears(type: RankingType): Promise<number[]> {
  * Fetch all continents for the filter dropdown.
  */
 export async function getContinents(): Promise<{ code: string; name: string }[]> {
+  if (!isSupabaseConfigured) return []
+
   const { data, error } = await supabase
     .from('continents')
     .select('code, name')
@@ -130,6 +138,13 @@ export async function getCountryProfile(iso2: string): Promise<{
   country: CountrySummary | null
   rankings: Record<RankingType, RankingRow | null>
 }> {
+  if (!isSupabaseConfigured) {
+    return {
+      country: null,
+      rankings: { wrces: null, wfcr: null, wspi: null, merit: null },
+    }
+  }
+
   // Get country info
   const { data: countryData } = await supabase
     .from('countries')
@@ -178,6 +193,8 @@ export async function getTopCountries(
   year: number,
   limit = 5,
 ): Promise<RankingRow[]> {
+  if (!isSupabaseConfigured) return []
+
   const { data, error } = await supabase
     .from(TABLE[type])
     .select(`

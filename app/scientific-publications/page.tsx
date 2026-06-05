@@ -6,7 +6,15 @@ export const metadata: Metadata = {
 }
 
 // ── Add publications here — no code knowledge needed ─────────────────────────
-const PUBLICATIONS = [
+type Publication = {
+  title: string
+  authors: string
+  year: string
+  journal?: string
+  link?: string  // optional: DOI or URL
+}
+
+const PUBLICATIONS: Publication[] = [
   {
     title: 'World Ranking of Countries in Elite Sport (WRCES) — Methodology and Results',
     authors: 'Nassif, N.',

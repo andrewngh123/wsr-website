@@ -1,3 +1,5 @@
+'use client'
+
 /**
  * CountryFlag — renders a small country flag using flagcdn.com (free, no API key).
  * iso2: two-letter ISO country code (e.g. "us", "fr", "gb")

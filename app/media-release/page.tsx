@@ -6,13 +6,20 @@ export const metadata: Metadata = {
 }
 
 // ── Add media releases here — no code knowledge needed ───────────────────────
-const RELEASES = [
+type Release = {
+  date: string
+  title: string
+  summary?: string
+  link?: string   // optional: URL to full press release PDF or page
+}
+
+const RELEASES: Release[] = [
   // Example entry:
   // {
   //   date: '2025-06-01',
   //   title: 'WSR Releases 2025 Annual Rankings',
   //   summary: 'USA leads the 2025 WRCES with a record-breaking score...',
-  //   link: '',   // optional: URL to full press release PDF or page
+  //   link: '',
   // },
 ]
 // ─────────────────────────────────────────────────────────────────────────────
@@ -30,7 +37,7 @@ export default function MediaReleasePage() {
           <p className="text-gray-400 text-center py-12">No media releases yet. Check back soon.</p>
         ) : (
           <div className="space-y-6">
-            {RELEASES.map((r: any, i: number) => (
+            {RELEASES.map((r, i) => (
               <div key={i} className="bg-white border border-gray-100 rounded-xl p-6 shadow-sm">
                 <p className="text-xs text-gray-400 mb-1">{r.date}</p>
                 <h3 className="font-semibold text-wsr-navy leading-snug mb-2">{r.title}</h3>
