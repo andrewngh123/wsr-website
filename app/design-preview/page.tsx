@@ -67,13 +67,12 @@ export default function DesignPreview() {
           className="absolute inset-0 opacity-30 mix-blend-screen bg-cover bg-center"
           style={{ backgroundImage: 'url(/design/particles.webp)' }}
         />
-        {/* subtle data grid */}
+        {/* stadium-floodlight glow (replaces the techy grid) */}
         <div
-          className="absolute inset-0 opacity-[0.12]"
+          className="absolute inset-0"
           style={{
-            backgroundImage:
-              'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)',
-            backgroundSize: '46px 46px',
+            background:
+              'radial-gradient(120% 80% at 50% -15%, rgba(255,255,255,0.20), transparent 55%), radial-gradient(70% 60% at 85% 115%, rgba(31,107,255,0.22), transparent 60%)',
           }}
         />
 
@@ -237,8 +236,62 @@ export default function DesignPreview() {
         </div>
       </section>
 
+      {/* ── BACKGROUND OPTIONS (pick one to replace the grid) ───────────── */}
+      <section className="max-w-6xl mx-auto px-4 py-14">
+        <h2 className="text-center text-2xl font-extrabold text-wsr-navy">Hero background — pick a vibe</h2>
+        <p className="text-center text-gray-500 text-sm mt-2 mb-8">
+          The hero above uses <strong>Option A</strong>. Here are alternatives to the old grid — tell me which you prefer.
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          {[
+            {
+              name: 'A · Floodlight glow',
+              desc: 'Soft stadium-light glow + blue corner glow. Atmospheric, not techy. (currently in the hero)',
+              overlay: 'radial-gradient(120% 80% at 50% -15%, rgba(255,255,255,0.20), transparent 55%), radial-gradient(70% 60% at 85% 115%, rgba(31,107,255,0.22), transparent 60%)',
+            },
+            {
+              name: 'B · Soft dots',
+              desc: 'Faint dotted texture — subtle grain, much softer than a grid.',
+              overlayImage: 'radial-gradient(rgba(255,255,255,0.20) 1.3px, transparent 1.3px)',
+              size: '22px 22px',
+            },
+            {
+              name: 'C · Motion streaks',
+              desc: 'Diagonal speed lines — a sporty sense of movement.',
+              overlayImage: 'repeating-linear-gradient(115deg, transparent 0 40px, rgba(255,255,255,0.06) 40px 43px)',
+            },
+            {
+              name: 'D · Clean (photo only)',
+              desc: 'Just the stadium photo + navy wash + the light particles. Minimal.',
+            },
+          ].map((opt) => (
+            <div key={opt.name} className="relative h-56 rounded-2xl overflow-hidden ring-1 ring-gray-200 shadow-sm">
+              <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: 'url(/design/hero-stadium.webp)' }} />
+              <div className="absolute inset-0 bg-gradient-to-br from-wsr-navy/95 via-wsr-navy/80 to-[#0b1c3d]/55" />
+              <div className="absolute inset-0 opacity-25 mix-blend-screen bg-cover bg-center" style={{ backgroundImage: 'url(/design/particles.webp)' }} />
+              {(opt.overlay || opt.overlayImage) && (
+                <div
+                  className="absolute inset-0"
+                  style={
+                    opt.overlay
+                      ? { background: opt.overlay }
+                      : { backgroundImage: opt.overlayImage, backgroundSize: opt.size }
+                  }
+                />
+              )}
+              <div className="relative h-full flex flex-col items-center justify-center text-center px-6">
+                <span className="text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full bg-black/30 text-white border border-white/20">
+                  {opt.name}
+                </span>
+                <p className="text-white/80 text-xs mt-3 max-w-xs">{opt.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       <div className="bg-amber-100 text-amber-900 text-center text-xs py-3 px-4">
-        End of preview · tell me what to tweak (more/less sporty, colors, layout) and I&apos;ll apply it to the real site.
+        End of preview · tell me which background letter (A/B/C/D) you like and any other tweaks, and I&apos;ll apply it to the real site.
       </div>
     </div>
   )
