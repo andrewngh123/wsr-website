@@ -7,6 +7,9 @@ export const metadata: Metadata = {
 }
 
 export default function AboutPage() {
+  // Andrew's sports-data-analytics experience started in 2017 — keep it current.
+  const analyticsYears = new Date().getFullYear() - 2017
+
   return (
     <div className="min-h-screen">
       {/* Header */}
@@ -48,7 +51,7 @@ export default function AboutPage() {
                 name: 'Andrew Alnghayoui',
                 role: 'Data Analyst',
                 photo: '/staff/Andrew.png',
-                bio: 'More than 6 years of experience in sports data analytics, MBA Sports Management Graduate from UCAM (Murcia, Spain). B.E. in Mechanical Engineering at NDU, Lebanon.',
+                bio: `More than ${analyticsYears} years of experience in sports data analytics, MBA Sports Management Graduate from UCAM (Murcia, Spain). B.E. in Mechanical Engineering at NDU, Lebanon.`,
               },
               {
                 name: 'Maya Gabriel',
