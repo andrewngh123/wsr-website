@@ -117,6 +117,37 @@ export async function getAvailableYears(type: RankingType): Promise<number[]> {
 }
 
 /**
+ * Counts for the homepage stat chips: number of countries and the number of
+ * distinct ranking years (so "12 years" becomes "13" automatically when a new
+ * season is added). Falls back to sensible defaults if the DB is unavailable.
+ */
+export async function getHomeStats(): Promise<{ countries: number; years: number }> {
+  if (!isSupabaseConfigured) return { countries: 206, years: 12 }
+  try {
+    const { count } = await supabase
+      .from('countries')
+      .select('*', { count: 'exact', head: true })
+
+    // Distinct ranking years — paginate, since Supabase caps each request.
+    const seen = new Set<number>()
+    const PAGE = 1000
+    for (let from = 0; ; from += PAGE) {
+      const { data, error } = await supabase
+        .from('wrces_rankings')
+        .select('year')
+        .order('year', { ascending: false })
+        .range(from, from + PAGE - 1)
+      if (error || !data || data.length === 0) break
+      data.forEach((r: { year: number }) => seen.add(r.year))
+      if (data.length < PAGE) break
+    }
+    return { countries: count ?? 206, years: seen.size || 12 }
+  } catch {
+    return { countries: 206, years: 12 }
+  }
+}
+
+/**
  * Fetch all continents for the filter dropdown.
  */
 export async function getContinents(): Promise<{ code: string; name: string }[]> {

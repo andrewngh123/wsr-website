@@ -162,7 +162,7 @@ export default function RankingsPage() {
         <p className="text-white/60 text-sm max-w-xl mx-auto">{activeTabInfo.description}</p>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 py-8">
+      <div className="max-w-4xl mx-auto px-4 py-8">
 
         {/* Ranking type tabs */}
         <div className="flex flex-wrap gap-2 mb-6">
@@ -250,7 +250,7 @@ export default function RankingsPage() {
                   </td>
                 </tr>
               ) : filtered.map((row) => (
-                <tr key={row.country_code} className="ranking-row">
+                <tr key={row.country_code} className="odd:bg-white even:bg-slate-50 hover:bg-slate-100 transition-colors border-b border-gray-50 last:border-0">
                   <td className="px-6 py-3 font-bold text-wsr-navy">{row.rank}</td>
                   <td className="px-6 py-3">
                     <CountryFlag iso2={row.iso_2} name={row.country_name} />
