@@ -80,12 +80,12 @@ export default function DesignPreview() {
         <div className="relative max-w-5xl mx-auto px-6 py-28 text-center text-white">
           <span
             className="inline-block text-xs font-semibold tracking-[0.25em] uppercase mb-5 px-3 py-1 rounded-full border"
-            style={{ color: ELECTRIC, borderColor: ELECTRIC + '66', background: ELECTRIC + '14' }}
+            style={{ color: GOLD, borderColor: GOLD + '66', background: GOLD + '14' }}
           >
             The Science of Sport
           </span>
           <h1 className="text-3xl md:text-5xl font-extrabold leading-[1.1] mb-5">
-            The <span style={{ color: GOLD }}>First Scientific Index</span><br />
+            The <span style={{ color: ELECTRIC }}>First Scientific Index</span><br />
             Ranking Every Country in Sport
           </h1>
           <p className="text-white/70 text-lg max-w-2xl mx-auto mb-10">
