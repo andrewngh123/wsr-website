@@ -24,7 +24,7 @@ const RANKING_TABS: { key: RankingType; label: string; description: string }[] =
   {
     key: 'wrces',
     label: 'WRCES',
-    description: 'World Ranking of Countries in Elite Sport — the primary comprehensive ranking.',
+    description: 'World Ranking of Countries in Elite Sport — the only research based index measuring national teams’ performances in all the sports.',
   },
   {
     key: 'wfcr',
