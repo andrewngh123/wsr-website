@@ -12,21 +12,23 @@ import React from 'react'
 export default function PageHeader({
   title,
   subtitle,
+  bg = '/design/headers/athletics.webp',
   children,
 }: {
   title?: string
   subtitle?: React.ReactNode
+  bg?: string
   children?: React.ReactNode
 }) {
   return (
     <div className="relative overflow-hidden bg-wsr-navy text-white">
-      {/* track & field photo */}
+      {/* sport photo (varies per page) */}
       <div
         className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: 'url(/design/headers/track.webp)' }}
+        style={{ backgroundImage: `url(${bg})` }}
       />
-      {/* navy wash — darker toward the left for legibility, lets the track show through */}
-      <div className="absolute inset-0 bg-gradient-to-r from-wsr-navy/90 via-wsr-navy/70 to-wsr-navy/55" />
+      {/* navy wash — keeps the title legible while the photo shows through */}
+      <div className="absolute inset-0 bg-gradient-to-r from-wsr-navy/92 via-wsr-navy/78 to-wsr-navy/62" />
       {/* electric floodlight glow */}
       <div
         className="absolute inset-0"

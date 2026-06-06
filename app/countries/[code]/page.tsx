@@ -58,7 +58,7 @@ export default async function CountryPage({ params }: Props) {
   return (
     <div className="min-h-screen bg-wsr-light">
       {/* Header */}
-      <PageHeader>
+      <PageHeader bg="/design/headers/tennis.webp">
         <div className="max-w-4xl mx-auto flex items-center gap-6">
           <CountryFlag iso2={country.iso_2} name={country.name} size="lg" />
           <div>

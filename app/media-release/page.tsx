@@ -22,6 +22,7 @@ export default function MediaReleasePage() {
       <PageHeader
         title="Media Release"
         subtitle={`Press coverage about WSR — ${total} articles across ${MEDIA_RELEASES.length} sources`}
+        bg="/design/headers/crowd.webp"
       />
 
       <div className="max-w-6xl mx-auto px-4 py-14 space-y-12">

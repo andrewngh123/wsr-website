@@ -17,6 +17,7 @@ export default function ScientificPublicationsPage() {
       <PageHeader
         title="Scientific Publications"
         subtitle={`Peer-reviewed research behind the WSR methodology — ${total} publications`}
+        bg="/design/headers/swimming.webp"
       />
 
       <div className="max-w-3xl mx-auto px-4 py-14 space-y-10">

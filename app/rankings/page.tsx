@@ -158,7 +158,7 @@ export default function RankingsPage() {
   return (
     <div className="min-h-screen bg-wsr-light">
       {/* Page header */}
-      <PageHeader title="World Sports Rankings" subtitle={activeTabInfo.description} />
+      <PageHeader title="World Sports Rankings" subtitle={activeTabInfo.description} bg="/design/headers/athletics.webp" />
 
       <div className="max-w-4xl mx-auto px-4 py-8">
 
