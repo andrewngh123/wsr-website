@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import PageHeader from '@/components/PageHeader'
 import { PUBLICATIONS } from '@/lib/publications'
 
 export const metadata: Metadata = {
@@ -13,12 +14,10 @@ export default function ScientificPublicationsPage() {
 
   return (
     <div className="min-h-screen bg-wsr-light">
-      <div className="bg-wsr-navy text-white py-14 px-4 text-center">
-        <h1 className="text-3xl font-extrabold">Scientific Publications</h1>
-        <p className="text-white/60 text-sm mt-2">
-          Peer-reviewed research behind the WSR methodology — {total} publications
-        </p>
-      </div>
+      <PageHeader
+        title="Scientific Publications"
+        subtitle={`Peer-reviewed research behind the WSR methodology — ${total} publications`}
+      />
 
       <div className="max-w-3xl mx-auto px-4 py-14 space-y-10">
         {PUBLICATIONS.map((section) => (

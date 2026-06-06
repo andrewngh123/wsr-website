@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import MediaImage from '@/components/MediaImage'
 import MediaCarousel from '@/components/MediaCarousel'
+import PageHeader from '@/components/PageHeader'
 import { MEDIA_RELEASES } from '@/lib/mediaReleases'
 
 export const metadata: Metadata = {
@@ -18,12 +19,10 @@ export default function MediaReleasePage() {
 
   return (
     <div className="min-h-screen bg-wsr-light">
-      <div className="bg-wsr-navy text-white py-14 px-4 text-center">
-        <h1 className="text-3xl font-extrabold">Media Release</h1>
-        <p className="text-white/60 text-sm mt-2">
-          Press coverage about WSR — {total} articles across {MEDIA_RELEASES.length} sources
-        </p>
-      </div>
+      <PageHeader
+        title="Media Release"
+        subtitle={`Press coverage about WSR — ${total} articles across ${MEDIA_RELEASES.length} sources`}
+      />
 
       <div className="max-w-6xl mx-auto px-4 py-14 space-y-12">
         {MEDIA_RELEASES.map((group) => (

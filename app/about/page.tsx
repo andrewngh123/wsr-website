@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import PageHeader from '@/components/PageHeader'
 
 export const metadata: Metadata = {
   title: 'About Us',
@@ -13,10 +14,7 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <div className="bg-wsr-navy text-white py-14 px-4 text-center">
-        <h1 className="text-3xl font-extrabold">About Us</h1>
-        <p className="text-white/60 text-sm mt-2">The science behind the rankings</p>
-      </div>
+      <PageHeader title="About Us" subtitle="The science behind the rankings" />
 
       <div className="max-w-3xl mx-auto px-4 py-14 space-y-10">
         {/* About WSR */}

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import CountryFlag from '@/components/CountryFlag'
 import RankChange from '@/components/RankChange'
+import PageHeader from '@/components/PageHeader'
 import { rankingStatus } from '@/lib/format'
 
 // ── Types ────────────────────────────────────────────────────────────────────
@@ -157,10 +158,7 @@ export default function RankingsPage() {
   return (
     <div className="min-h-screen bg-wsr-light">
       {/* Page header */}
-      <div className="bg-wsr-navy text-white py-12 px-4 text-center">
-        <h1 className="text-3xl font-extrabold mb-2">World Sports Rankings</h1>
-        <p className="text-white/60 text-sm max-w-xl mx-auto">{activeTabInfo.description}</p>
-      </div>
+      <PageHeader title="World Sports Rankings" subtitle={activeTabInfo.description} />
 
       <div className="max-w-4xl mx-auto px-4 py-8">
 

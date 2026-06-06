@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import { getCountryProfile, getCountryName } from '@/lib/rankings'
 import CountryFlag from '@/components/CountryFlag'
 import RankChange from '@/components/RankChange'
+import PageHeader from '@/components/PageHeader'
 import Link from 'next/link'
 
 interface Props {
@@ -57,17 +58,17 @@ export default async function CountryPage({ params }: Props) {
   return (
     <div className="min-h-screen bg-wsr-light">
       {/* Header */}
-      <div className="bg-wsr-navy text-white py-14 px-4">
+      <PageHeader>
         <div className="max-w-4xl mx-auto flex items-center gap-6">
           <CountryFlag iso2={country.iso_2} name={country.name} size="lg" />
           <div>
             <h1 className="text-3xl font-extrabold">{country.name}</h1>
-            <p className="text-white/60 text-sm mt-1 uppercase tracking-wide">
+            <p className="text-white/70 text-sm mt-1 uppercase tracking-wide">
               {country.continent_code} &bull; ISO: {country.iso_2.toUpperCase()}
             </p>
           </div>
         </div>
-      </div>
+      </PageHeader>
 
       {/* Rankings cards */}
       <div className="max-w-4xl mx-auto px-4 py-10">
