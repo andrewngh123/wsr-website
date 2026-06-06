@@ -98,7 +98,7 @@ export default async function HomePage() {
       </section>
 
       {/* ── TOP-5 PREVIEW TABLE ──────────────────────────────────────────── */}
-      <section className="max-w-3xl mx-auto px-4 -mt-8 mb-16">
+      <section className="relative z-10 max-w-3xl mx-auto px-4 -mt-8 mb-16">
         <div className="bg-white rounded-2xl shadow-xl ring-1 ring-gray-100 overflow-hidden">
           <div className="px-6 py-4 flex items-center justify-between text-white" style={{ background: 'linear-gradient(135deg, #0b1c3d, #15294d)' }}>
             <div className="flex items-center gap-3">
