@@ -1,8 +1,9 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'About Us — World Sports Rankings',
+  title: 'About Us',
   description: 'Learn about the WRCES methodology and the team behind World Sports Rankings.',
+  alternates: { canonical: '/about' },
 }
 
 export default function AboutPage() {

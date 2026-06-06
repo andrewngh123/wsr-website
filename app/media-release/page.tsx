@@ -5,7 +5,9 @@ import MediaCarousel from '@/components/MediaCarousel'
 import { MEDIA_RELEASES } from '@/lib/mediaReleases'
 
 export const metadata: Metadata = {
-  title: 'Media Release — World Sports Rankings',
+  title: 'Media Release',
+  description: 'Press coverage and media articles about World Sports Rankings from AIPS, Le Figaro, Le Monde and more.',
+  alternates: { canonical: '/media-release' },
 }
 
 // Generic placeholder image used by the old site — show the branded panel instead.

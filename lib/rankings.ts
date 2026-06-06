@@ -148,6 +148,31 @@ export async function getHomeStats(): Promise<{ countries: number; years: number
 }
 
 /**
+ * All country ISO-2 codes (lowercase) — for the sitemap and country routes.
+ */
+export async function getAllCountryCodes(): Promise<string[]> {
+  if (!isSupabaseConfigured) return []
+  const { data, error } = await supabase.from('countries').select('iso_2')
+  if (error || !data) return []
+  return data
+    .map((r: { iso_2: string | null }) => (r.iso_2 ?? '').toLowerCase())
+    .filter(Boolean)
+}
+
+/**
+ * A single country's display name from its ISO-2 code (for page metadata).
+ */
+export async function getCountryName(iso2: string): Promise<string | null> {
+  if (!isSupabaseConfigured) return null
+  const { data } = await supabase
+    .from('countries')
+    .select('name')
+    .ilike('iso_2', iso2)
+    .single()
+  return data?.name ?? null
+}
+
+/**
  * Fetch all continents for the filter dropdown.
  */
 export async function getContinents(): Promise<{ code: string; name: string }[]> {

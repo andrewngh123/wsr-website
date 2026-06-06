@@ -3,7 +3,9 @@ import Link from 'next/link'
 import { PUBLICATIONS } from '@/lib/publications'
 
 export const metadata: Metadata = {
-  title: 'Scientific Publications — World Sports Rankings',
+  title: 'Scientific Publications',
+  description: 'Peer-reviewed papers, books and conference proceedings behind the World Sports Rankings methodology.',
+  alternates: { canonical: '/scientific-publications' },
 }
 
 export default function ScientificPublicationsPage() {

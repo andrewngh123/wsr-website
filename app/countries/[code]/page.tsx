@@ -1,10 +1,22 @@
-import { getCountryProfile } from '@/lib/rankings'
+import { Metadata } from 'next'
+import { getCountryProfile, getCountryName } from '@/lib/rankings'
 import CountryFlag from '@/components/CountryFlag'
 import RankChange from '@/components/RankChange'
 import Link from 'next/link'
 
 interface Props {
   params: { code: string }
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const iso2 = params.code.toLowerCase()
+  const name = await getCountryName(iso2).catch(() => null)
+  const label = name ?? iso2.toUpperCase()
+  return {
+    title: `${label} — Sports Ranking`,
+    description: `${label}'s position in the World Ranking of Countries in Elite Sport (WRCES), plus its WFCR, WSPI and WRCES Merit rankings.`,
+    alternates: { canonical: `/countries/${iso2}` },
+  }
 }
 
 const RANKING_LABELS = {
