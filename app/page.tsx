@@ -2,7 +2,7 @@ import Link from 'next/link'
 import CountryFlag from '@/components/CountryFlag'
 import RankChange from '@/components/RankChange'
 import RankingLogo from '@/components/RankingLogo'
-import ReviewAvatar from '@/components/ReviewAvatar'
+import ReviewsCarousel from '@/components/ReviewsCarousel'
 import { getTopCountries, getLatestYear, getHomeStats } from '@/lib/rankings'
 import { rankingStatus } from '@/lib/format'
 import { PUBLICATIONS } from '@/lib/publications'
@@ -258,8 +258,8 @@ export default async function HomePage() {
       <section className="py-16 px-4 bg-wsr-light">
         <div className="max-w-6xl mx-auto">
           <h2 className="section-title text-center mb-10">Reviews</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[
+          <ReviewsCarousel
+            reviews={[
               {
                 text: 'Olympic medal counts have several weaknesses. Non-Olympic sports are omitted, and all medals are counted alike, regardless of the popularity of a sport. Nadim Nassif has developed a more innovative ranking system which incorporates factors such as the overall popularity of a sport and events beyond the Olympic Games in order to capture a more holistic view of measuring success in sports. Nassif\'s ranking system should serve as a blueprint for a much needed debate on Olympic medal count reform.',
                 name: 'Dr. Danyel Reiche',
@@ -295,19 +295,8 @@ export default async function HomePage() {
                 photo: '/reviews/jean-baptiste-guegan.jpg',
                 initials: 'JG',
               },
-            ].map((r, i) => (
-              <div key={i} className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col">
-                <p className="text-gray-600 text-sm italic leading-relaxed mb-6 flex-1">&ldquo;{r.text}&rdquo;</p>
-                <div className="flex items-center gap-3">
-                  <ReviewAvatar photo={r.photo} name={r.name} initials={r.initials} />
-                  <div>
-                    <p className="font-semibold text-wsr-navy text-sm">{r.name}</p>
-                    <p className="text-gray-400 text-xs">{r.title}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+            ]}
+          />
         </div>
       </section>
     </>
