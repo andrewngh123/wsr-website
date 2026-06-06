@@ -14,7 +14,7 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <PageHeader title="About Us" subtitle="The science behind the rankings" bg="/design/headers/basketball.webp" />
+      <PageHeader title="About Us" subtitle="The science behind the rankings" bg="/design/headers/cycling.webp" />
 
       <div className="max-w-3xl mx-auto px-4 py-14 space-y-10">
         {/* About WSR */}

@@ -22,22 +22,25 @@ export default function PageHeader({
 }) {
   return (
     <div className="relative overflow-hidden bg-wsr-navy text-white">
-      {/* sport photo (varies per page) */}
+      {/* sport photo (varies per page), faded into the navy — same treatment as the home hero */}
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{ backgroundImage: `url(${bg})` }}
       />
-      {/* navy wash — keeps the title legible while the photo shows through */}
-      <div className="absolute inset-0 bg-gradient-to-r from-wsr-navy/92 via-wsr-navy/78 to-wsr-navy/62" />
-      {/* electric floodlight glow */}
+      {/* navy gradient wash */}
+      <div className="absolute inset-0 bg-gradient-to-br from-wsr-navy/95 via-wsr-navy/80 to-[#0b1c3d]/60" />
+      {/* light particles */}
+      <div
+        className="absolute inset-0 opacity-30 mix-blend-screen bg-cover bg-center"
+        style={{ backgroundImage: 'url(/design/particles.webp)' }}
+      />
+      {/* stadium-floodlight glow */}
       <div
         className="absolute inset-0"
-        style={{ background: 'radial-gradient(100% 130% at 85% -25%, rgba(31,107,255,0.32), transparent 55%)' }}
-      />
-      {/* gold accent line at the bottom edge */}
-      <div
-        className="absolute bottom-0 inset-x-0 h-[3px]"
-        style={{ background: 'linear-gradient(90deg, transparent, #e8a020cc, transparent)' }}
+        style={{
+          background:
+            'radial-gradient(120% 80% at 50% -15%, rgba(255,255,255,0.20), transparent 55%), radial-gradient(70% 60% at 85% 115%, rgba(31,107,255,0.22), transparent 60%)',
+        }}
       />
 
       <div className="relative px-4 py-16">
