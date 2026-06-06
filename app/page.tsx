@@ -2,6 +2,7 @@ import Link from 'next/link'
 import CountryFlag from '@/components/CountryFlag'
 import RankChange from '@/components/RankChange'
 import RankingLogo from '@/components/RankingLogo'
+import ReviewAvatar from '@/components/ReviewAvatar'
 import { getTopCountries, getLatestYear, getHomeStats } from '@/lib/rankings'
 import { rankingStatus } from '@/lib/format'
 import { PUBLICATIONS } from '@/lib/publications'
@@ -260,26 +261,49 @@ export default async function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
               {
-                text: 'Nassif\'s ranking system should serve as a blueprint for a much needed debate on Olympic medal count reform.',
+                text: 'Olympic medal counts have several weaknesses. Non-Olympic sports are omitted, and all medals are counted alike, regardless of the popularity of a sport. Nadim Nassif has developed a more innovative ranking system which incorporates factors such as the overall popularity of a sport and events beyond the Olympic Games in order to capture a more holistic view of measuring success in sports. Nassif\'s ranking system should serve as a blueprint for a much needed debate on Olympic medal count reform.',
                 name: 'Dr. Danyel Reiche',
-                title: 'Associate Professor for Comparative Politics, UAE University',
+                title: 'Associate Professor for Comparative Politics, United Arab Emirates University (UAEU)',
+                photo: '/reviews/danyel-reiche.jpg',
+                initials: 'DR',
               },
               {
                 text: 'The World Ranking of Countries in Elite Sport is to sport what the Shanghai Ranking is to universities.',
                 name: 'Hubert Ripoll',
                 title: 'Emeritus Professor in Sports Sciences, University of Aix-Marseille',
+                photo: '/reviews/hubert-ripoll.jpg',
+                initials: 'HR',
               },
               {
                 text: 'The outcome of a rigorous methodology with an open mind to further improvement.',
                 name: 'Wladimir Andreff',
-                title: 'President of the Scientific Council of the Observatory of Sports Economy',
+                title: 'President of the Scientific Council of the Observatory of Sports Economy, French Ministry of Sports',
+                photo: '/reviews/wladimir-andreff.jpg',
+                initials: 'WA',
+              },
+              {
+                text: 'During my 20 years of working specifically in sport development throughout the Pacific Region and subsequently as an academic in the field of sport management and development I have remained frustrated by the dogmatic adherence to the Olympic Games Medal tally as the key rationale for directing funds and setting priorities for the development of sport. This new ranking system offers hope that there is a better way.',
+                name: 'Brian Minikin',
+                title: 'Former Regional Manager, Sport Development, Oceania National Olympic Committee',
+                photo: '/reviews/brian-minikin.jpg',
+                initials: 'BM',
+              },
+              {
+                text: 'The World Ranking of Countries in Elite Sport (WRCES) has helped me to better evaluate France\'s performance in international competitions and write the book "La France n\'est pas un pays de sport?"',
+                name: 'Jean-Baptiste Guégan',
+                title: 'Editor in Chief, La Géographie — la revue de la Société de Géographie',
+                photo: '/reviews/jean-baptiste-guegan.jpg',
+                initials: 'JG',
               },
             ].map((r, i) => (
-              <div key={i} className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-                <p className="text-gray-600 text-sm italic leading-relaxed mb-4">&ldquo;{r.text}&rdquo;</p>
-                <div>
-                  <p className="font-semibold text-wsr-navy text-sm">{r.name}</p>
-                  <p className="text-gray-400 text-xs">{r.title}</p>
+              <div key={i} className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex flex-col">
+                <p className="text-gray-600 text-sm italic leading-relaxed mb-6 flex-1">&ldquo;{r.text}&rdquo;</p>
+                <div className="flex items-center gap-3">
+                  <ReviewAvatar photo={r.photo} name={r.name} initials={r.initials} />
+                  <div>
+                    <p className="font-semibold text-wsr-navy text-sm">{r.name}</p>
+                    <p className="text-gray-400 text-xs">{r.title}</p>
+                  </div>
                 </div>
               </div>
             ))}
