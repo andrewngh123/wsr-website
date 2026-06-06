@@ -18,6 +18,7 @@ const SAMPLE = [
 ]
 
 const ELECTRIC = '#1F6BFF'
+const GOLD = '#e8a020'
 
 function Change({ change }: { change: string | null }) {
   if (!change) return <span className="text-gray-300 text-xs">—</span>
@@ -83,8 +84,8 @@ export default function DesignPreview() {
           >
             The Science of Sport
           </span>
-          <h1 className="text-4xl md:text-6xl font-extrabold leading-[1.05] mb-5">
-            The First <span style={{ color: ELECTRIC }}>Scientific Index</span><br />
+          <h1 className="text-3xl md:text-5xl font-extrabold leading-[1.1] mb-5">
+            The <span style={{ color: GOLD }}>First Scientific Index</span><br />
             Ranking Every Country in Sport
           </h1>
           <p className="text-white/70 text-lg max-w-2xl mx-auto mb-10">
@@ -100,7 +101,7 @@ export default function DesignPreview() {
             />
             <button
               className="px-7 py-4 font-semibold text-sm text-white transition-all hover:brightness-110"
-              style={{ background: `linear-gradient(135deg, ${ELECTRIC}, #00C2FF)` }}
+              style={{ background: GOLD }}
             >
               Search
             </button>
