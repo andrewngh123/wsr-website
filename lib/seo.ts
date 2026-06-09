@@ -7,7 +7,7 @@
 //  👉 When the site moves to its permanent domain (sportsrankings.world),
 //     change this to `true` so it can be found in search.
 // ─────────────────────────────────────────────────────────────────────────────
-export const SITE_INDEXABLE = false
+export const SITE_INDEXABLE = true
 
 // The permanent canonical URL of the site.
 export const SITE_URL = 'https://sportsrankings.world'
