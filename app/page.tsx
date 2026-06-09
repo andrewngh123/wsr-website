@@ -171,24 +171,28 @@ export default async function HomePage() {
             {[
               {
                 slug: 'wrces',
+                href: '/rankings/elite-sport',
                 label: 'WRCES',
                 description: 'The World Ranking of Countries in Elite Sport — a holistic and precise evaluation of nations in elite sport.',
                 logo: '/rankings/wrces_final_logo_new.svg',
               },
               {
                 slug: 'wfcr',
+                href: '/rankings/fittest-countries',
                 label: 'WFCR',
                 description: "The World's Fittest Countries Ranking — an unrivaled research-based tool to measure the fitness of a country.",
                 logo: '/rankings/wfcr_logo_new.svg',
               },
               {
                 slug: 'wspi',
+                href: '/rankings/sports-power-index',
                 label: 'WSPI',
                 description: 'The World Sports Power Index — aims to rank the effect of sports on countries\' geopolitical power.',
                 logo: '/rankings/wspi_logo_new.svg',
               },
               {
                 slug: 'wrces_merit',
+                href: '/rankings/merit',
                 label: 'WRCES Merit',
                 description: 'The WRCES Merit ranking rewards countries that are "punching above their weight" in international sport.',
                 logo: '/rankings/wrces_merit_logo_new.svg',
@@ -196,7 +200,7 @@ export default async function HomePage() {
             ].map((r) => (
               <Link
                 key={r.slug}
-                href={`/rankings?ranking=${r.slug}`}
+                href={r.href}
                 className="group relative bg-white rounded-xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-200 border border-gray-100 flex flex-col items-start gap-3 overflow-hidden"
               >
                 <span className="absolute top-0 left-0 h-1 w-0 group-hover:w-full transition-all duration-300" style={{ background: `linear-gradient(90deg, ${ELECTRIC}, #00C2FF)` }} />
