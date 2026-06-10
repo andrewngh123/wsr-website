@@ -56,12 +56,6 @@ export default async function HomePage() {
         <div className="absolute inset-0" style={{ background: 'radial-gradient(120% 80% at 50% -15%, rgba(255,255,255,0.20), transparent 55%), radial-gradient(70% 60% at 85% 115%, rgba(31,107,255,0.22), transparent 60%)' }} />
 
         <div className="relative max-w-4xl mx-auto px-4 py-24 md:py-28 text-center text-white">
-          <span
-            className="inline-block text-xs font-semibold tracking-[0.25em] uppercase mb-5 px-3 py-1 rounded-full border"
-            style={{ color: GOLD, borderColor: GOLD + '66', background: GOLD + '14' }}
-          >
-            The Science of Sport
-          </span>
           <h1 className="text-3xl md:text-5xl font-extrabold leading-[1.1] mb-4">
             The <span style={{ color: ELECTRIC }}>First Scientific Index</span><br />
             Ranking all Countries in Sport
