@@ -42,6 +42,7 @@ export const MEDIA_RELEASES: MediaSource[] = [
   {
     source: "MENA Region",
     articles: [
+      { title: "نديم ناصيف: ما هي الأبعاد الجيوسياسية لكرة القدم؟ • فرانس 24 / FRANCE 24", link: "https://www.youtube.com/watch?v=JI4r09ib1dg", image: "https://i.ytimg.com/vi/JI4r09ib1dg/hqdefault.jpg" },
       { title: "WRCES إنجاز غير مسبوق: لبنان يتقدّم إلى المرتبة 89 في التصنيف الرياضي الدولي", link: "https://jezzinetahki.com/%D8%AA%D9%81%D8%A7%D8%B5%D9%8A%D9%8470343/", image: "https://images.ctfassets.net/urx0o1aho2r4/4Bxn6Vf7OwvSyNuXby1nWP/8e9693b26cbd2ec4d07d8298562d312d/je_news_70343_1771261269.28641ee0b0b52b916a5526eab2a9d3e9b24.jpg" },
       { title: "WRCES أفضل موقع يحققه في تاريخه الرياضي لبنان يتقدّم إلى المركز الـ89 في التصنيف الدولي السنوي", link: "https://www.analoubnan.com/%D8%A3%D9%81%D8%B6%D9%84-%D9%85%D9%88%D9%82%D8%B9-%D9%8A%D8%AD%D9%82%D9%82%D9%87-%D9%81%D9%8A-%D8%AA%D8%A7%D8%B1%D9%8A%D8%AE%D9%87-%D8%A7%D9%84%D8%B1%D9%8A%D8%A7%D8%B6%D9%8A-%D9%84%D8%A8%D9%86%D8%A7/", image: "https://images.ctfassets.net/urx0o1aho2r4/6ltJcoLNkCyX6hNafb0izH/49ed463ae4b8d159e8d83bf7cd73c399/BBBBBBBBBBBBB.jpg" },
       { title: "Lebanon Progresses Slowly on the International Sports Scene According to the WRCES", link: "https://cedarssportscom.wordpress.com/2026/02/16/lebanon-progresses-slowly-on-the-international-sports-scene-according-to-the-wrces/", image: "https://images.ctfassets.net/urx0o1aho2r4/21Foo21CgsfTxTSey8ayxc/348b6d9b89ab548e1f58e9df357651e6/wrces-blog-cover-2026.webp" },
