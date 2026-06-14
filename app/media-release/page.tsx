@@ -14,6 +14,14 @@ export const metadata: Metadata = {
 // Generic placeholder image used by the old site — show the branded panel instead.
 const isPlaceholder = (src?: string) => !src || /WSR_LOGO/i.test(src)
 
+// Sort newest → oldest by date; items without a date keep their order, after dated ones.
+function byDateDesc(a: { date?: string }, b: { date?: string }) {
+  if (a.date && b.date) return b.date.localeCompare(a.date)
+  if (a.date) return -1
+  if (b.date) return 1
+  return 0
+}
+
 export default function MediaReleasePage() {
   const total = MEDIA_RELEASES.reduce((n, g) => n + g.articles.length, 0)
 
@@ -26,7 +34,9 @@ export default function MediaReleasePage() {
       />
 
       <div className="max-w-6xl mx-auto px-4 py-14 space-y-12">
-        {MEDIA_RELEASES.map((group) => (
+        {MEDIA_RELEASES.map((group) => {
+          const articles = [...group.articles].sort(byDateDesc)
+          return (
           <section key={group.source}>
             <h2 className="section-title mb-5">
               {group.source}
@@ -34,7 +44,7 @@ export default function MediaReleasePage() {
             </h2>
 
             <MediaCarousel>
-              {group.articles.map((article, i) => (
+              {articles.map((article, i) => (
                 <a
                   key={i}
                   href={article.link}
@@ -59,7 +69,8 @@ export default function MediaReleasePage() {
               ))}
             </MediaCarousel>
           </section>
-        ))}
+          )
+        })}
 
         <div className="text-center pt-2">
           <Link href="/" className="text-sm text-wsr-blue hover:underline">← Back to home</Link>
