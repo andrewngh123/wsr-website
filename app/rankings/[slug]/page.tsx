@@ -172,7 +172,7 @@ export default async function RankingLandingPage({ params }: { params: { slug: s
                           <span className="font-medium text-wsr-navy group-hover:text-wsr-blue group-hover:underline">{r.country_name}</span>
                         </Link>
                       </td>
-                      <td className="px-5 py-3 text-right font-semibold text-gray-700 tabular-nums">{Number(r.points).toLocaleString()}</td>
+                      <td className="px-5 py-3 text-right font-semibold text-gray-700 tabular-nums">{Math.round(Number(r.points)).toLocaleString()}</td>
                       <td className="px-5 py-3 text-center"><RankChange change={r.change} /></td>
                     </tr>
                   ))}

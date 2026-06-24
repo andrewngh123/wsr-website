@@ -133,7 +133,7 @@ export default async function HomePage() {
                     </Link>
                   </td>
                   <td className="px-6 py-3 text-right font-semibold text-gray-700">
-                    {row.points.toLocaleString()}
+                    {Math.round(row.points).toLocaleString()}
                   </td>
                   <td className="px-6 py-3 text-center">
                     <RankChange change={row.change} />

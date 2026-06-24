@@ -84,7 +84,7 @@ export default async function CountryPage({ params }: Props) {
                   <div>
                     <p className="text-4xl font-extrabold text-wsr-navy">#{data.rank}</p>
                     <p className="text-sm text-gray-500 mt-1">
-                      {Number(data.points).toLocaleString()} pts
+                      {Math.round(Number(data.points)).toLocaleString()} pts
                     </p>
                   </div>
                   <div className="text-right">

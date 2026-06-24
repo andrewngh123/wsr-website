@@ -262,7 +262,7 @@ export default function RankingsPage() {
                     </Link>
                   </td>
                   <td className="px-6 py-3 text-right font-semibold text-gray-700">
-                    {Number(row.points).toLocaleString()}
+                    {Math.round(Number(row.points)).toLocaleString()}
                   </td>
                   <td className="px-6 py-3 text-center">
                     <RankChange change={row.change} />
