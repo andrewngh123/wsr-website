@@ -10,7 +10,7 @@ export default function Footer() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/logo-w.svg" alt="WSR Logo" className="h-10 mb-4" />
             <p className="text-sm leading-relaxed text-white/60">
-              World Sports Rankings (WSR) is a platform evaluating the local and international sport
+              World Sports Rankings (WSR) is a scientific platform evaluating the local and international sport
               policies and strategies implemented by National Sports Governing Bodies, sports leagues,
               National Olympic Committees, National Sports Federations and International Sports Federations.
             </p>

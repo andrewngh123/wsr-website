@@ -32,8 +32,8 @@ const PAGES: Record<string, SlugConfig> = {
     description:
       'Which countries are the best at sport? The World Ranking of Countries in Elite Sport (WRCES) is the first scientific index ranking all 206 nations across every sport — far beyond the Olympic medal table.',
     intro: [
-      'Which countries are the best at sport? The World Ranking of Countries in Elite Sport (WRCES) is the first research-based index to answer that scientifically — ranking all 206 nations with National Olympic Committees across every sport, not just Olympic events.',
-      'Unlike a simple medal table, this sports ranking by country weights each sport by its global popularity and universality, giving a true picture of national sporting performance and the top sporting nations in the world.',
+      'Which countries are the best in sport? The World Ranking of Countries in Elite Sport (WRCES) is the first research-based index to answer that scientifically — ranking the 206 countries with National Olympic Committees across every sport, Olympics and non-Olympics.',
+      'Unlike the Olympic medal table, the WRCES weights each sport by its level of competition, giving a true picture of national sporting performance.',
     ],
     faq: [
       { q: 'Which country is the best at sport?', a: (y, t) => `In the ${y} World Ranking of Countries in Elite Sport (WRCES), ${t} ranks as the best country in sport.` },
