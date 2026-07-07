@@ -83,7 +83,7 @@ const PAGES: Record<string, SlugConfig> = {
     description:
       'The WRCES Merit ranking rewards the countries punching above their weight in sport — those achieving the most relative to their population and economic resources.',
     intro: [
-      'The WRCES Merit ranking highlights the countries that punch above their weight in elite sport — the nations achieving the most relative to their population and economic resources.',
+      'The WRCES Merit ranking highlights the countries that punch above their weight in elite sport — the nations achieving the most relative to their economic resources.',
       'It re-scores the World Ranking of Countries in Elite Sport against each country’s GDP, surfacing the real over-performers. See the full sports merit ranking by country below.',
     ],
     faq: [
