@@ -23,6 +23,7 @@ export const PUBLICATIONS: PubSection[] = [
     { citation: "Nassif, N., Raspaud, M. (2023). National Success in Elite Sport: Exploring the Factors that Lead to Success. Palgrave Macmillan, Cham.", link: "https://doi.org/10.1007/978-3-031-38997-9" },
   ] },
   { icon: "📖", heading: "Chapters in Books", items: [
+    { citation: "Pulleiro Méndez, C. & Nassif, N. (2026). National Power and World Sports Rankings: Measuring the capacity of elite sport to reveal national power and produce soft power. In D. Morales Ruvalcaba, C. Pulleiro Méndez & A. Rocha Valencia (eds), Quantitative Approaches to Global Power: Multidisciplinary Insights from the World Power Index. Singapore: Springer.", link: "https://link.springer.com/chapter/10.1007/978-3-032-23041-6_12" },
     { citation: "Nassif, N and Chaudel, V (2025). Pour une analyse plus inclusive de la performance des pays dans les Jeux olympiques : le World Ranking of Countries in Elite Sport. Dans « Bilan & Perspectives Paris 2024 », « Cahiers d'Etudes Olympiques », France: éditions désiris, pp.131-142." },
     { citation: "Nassif, N., Raspaud, M. (2023). Expertise of the NSGBs, NOCs, NSFs, and SAs in Implementing Elite Sport Policies. In: National Success in Elite Sport. Palgrave Macmillan, Cham.", link: "https://doi.org/10.1007/978-3-031-38997-9_6" },
     { citation: "Nassif, N., Raspaud, M. (2023). What Are the Factors Leading to Countries' Success in Elite Sport and How Are They Related?. In: National Success in Elite Sport. Palgrave Macmillan, Cham.", link: "https://doi.org/10.1007/978-3-031-38997-9_5" },
