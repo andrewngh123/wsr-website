@@ -45,4 +45,48 @@
     @apply bg-wsr-accent text-white font-semibold px-6 py-2.5 rounded-lg
            hover:brightness-110 transition-all duration-150;
   }
+
+  /* ── "What's hot" news ticker ─────────────────────────────────────────── */
+  /* The track holds several copies of the headline list and slides left by
+     exactly one copy's width, so the loop is seamless. See WhatsHotBar.tsx. */
+  .wsr-ticker-track {
+    display: flex;
+    width: max-content;
+    animation: wsr-ticker-scroll var(--wsr-ticker-duration, 30s) linear infinite;
+  }
+
+  @keyframes wsr-ticker-scroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(var(--wsr-ticker-shift, -50%)); }
+  }
+
+  /* Let people stop the text to read it */
+  .wsr-ticker:hover .wsr-ticker-track,
+  .wsr-ticker:focus-within .wsr-ticker-track {
+    animation-play-state: paused;
+  }
+
+  /* Soften both edges so headlines fade in and out rather than being cut off */
+  .wsr-ticker-viewport {
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 28px, #000 calc(100% - 28px), transparent);
+    mask-image: linear-gradient(to right, transparent, #000 28px, #000 calc(100% - 28px), transparent);
+  }
+
+  /* The pulsing "live" dot in the label */
+  .wsr-ticker-dot {
+    animation: wsr-ticker-pulse 1.6s ease-in-out infinite;
+  }
+
+  @keyframes wsr-ticker-pulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0.25; }
+  }
+
+  /* Respect a reduced-motion preference: no scrolling, no pulse — the bar
+     becomes a plain, manually scrollable line of text. */
+  @media (prefers-reduced-motion: reduce) {
+    .wsr-ticker-track { animation: none; }
+    .wsr-ticker-dot   { animation: none; }
+    .wsr-ticker-viewport { overflow-x: auto; }
+  }
 }

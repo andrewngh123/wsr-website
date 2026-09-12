@@ -2,6 +2,7 @@ import Link from 'next/link'
 import CountryFlag from '@/components/CountryFlag'
 import RankChange from '@/components/RankChange'
 import RankingLogo from '@/components/RankingLogo'
+import WhatsHotBar from '@/components/WhatsHotBar'
 import ReviewsCarousel from '@/components/ReviewsCarousel'
 import { getTopCountries, getLatestYear, getHomeStats } from '@/lib/rankings'
 import { rankingStatus } from '@/lib/format'
@@ -97,7 +98,10 @@ export default async function HomePage() {
       </section>
 
       {/* ── TOP-5 PREVIEW TABLE ──────────────────────────────────────────── */}
-      <section className="relative z-10 max-w-3xl mx-auto px-4 -mt-8 mb-16">
+      <section className="relative z-10 max-w-3xl mx-auto px-4 -mt-[84px] mb-16">
+        {/* Scrolling "what's hot" ticker — edit the headline in lib/whatsHot.ts */}
+        <WhatsHotBar className="mb-4" />
+
         <div className="bg-white rounded-2xl shadow-xl ring-1 ring-gray-100 overflow-hidden">
           <div className="px-6 py-4 flex items-center justify-between text-white" style={{ background: 'linear-gradient(135deg, #0b1c3d, #15294d)' }}>
             <div className="flex items-center gap-3">
