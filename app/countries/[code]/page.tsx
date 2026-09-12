@@ -5,6 +5,9 @@ import RankChange from '@/components/RankChange'
 import PageHeader from '@/components/PageHeader'
 import Link from 'next/link'
 
+// Re-fetch the live Supabase data at most once an hour (see app/page.tsx).
+export const revalidate = 3600
+
 interface Props {
   params: { code: string }
 }

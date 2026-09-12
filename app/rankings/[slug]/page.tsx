@@ -8,7 +8,7 @@ import { getRankings, getLatestYear, type RankingType } from '@/lib/rankings'
 import { rankingStatus } from '@/lib/format'
 import { SITE_URL } from '@/lib/seo'
 
-export const revalidate = 86400 // refresh data daily
+export const revalidate = 3600 // refresh data hourly
 
 type SlugConfig = {
   type: RankingType

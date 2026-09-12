@@ -7,6 +7,10 @@ import { getTopCountries, getLatestYear, getHomeStats } from '@/lib/rankings'
 import { rankingStatus } from '@/lib/format'
 import { PUBLICATIONS } from '@/lib/publications'
 
+// Re-fetch the live Supabase data at most once an hour, so a new ranking
+// upload appears on the homepage without needing a redeploy.
+export const revalidate = 3600
+
 const ELECTRIC = '#1F6BFF'
 const GOLD = '#e8a020'
 
