@@ -22,7 +22,7 @@ export const WHATS_HOT: HotItem[] = [
   {
     text:
       'The FIFA Men World Cup had a huge impact on the 2026 WRCES 2nd provisional ranking. ' +
-      'USA still tops the ranking, but Spain is now ranked 2nd, and France 3rd. ' +
+      'USA still tops the ranking, but Spain is now ranked 2nd, France 3rd, and Argentina 4th ! ' +
       'Stay tuned for more!',
     href: '/rankings/elite-sport',
   },
