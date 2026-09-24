@@ -61,6 +61,14 @@ const TABLE_MAP: Record<RankingType, string> = {
   merit: 'merit_rankings',
 }
 
+// Which column holds the score to display. Merit shows `final_points` (its
+// 0-100 normalised score) rather than `points`, aliased back to `points` so the
+// row mapping below is unchanged. Mirrors POINTS_COLUMN in lib/rankings.ts —
+// duplicated here for the same reason TABLE_MAP is: this is a client component
+// and must not statically import the Supabase data layer.
+const MERIT_SELECT = 'rank, country_code, points:final_points, change, countries!inner(name, iso_2, continent_code)'
+const DEFAULT_SELECT = 'rank, country_code, points, change, countries!inner(name, iso_2, continent_code)'
+
 export default function RankingsPage() {
   const [activeTab, setActiveTab]     = useState<RankingType>('wrces')
   const [continent, setContinent]     = useState('all')
@@ -116,7 +124,7 @@ export default function RankingsPage() {
 
       let query = supabase
         .from(TABLE_MAP[activeTab])
-        .select('rank, country_code, points, change, countries!inner(name, iso_2, continent_code)')
+        .select(activeTab === 'merit' ? MERIT_SELECT : DEFAULT_SELECT)
         .eq('year', year)
         .order('rank', { ascending: true })
 

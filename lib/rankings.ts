@@ -10,7 +10,10 @@
  *   - wrces_rankings  (id, year, rank, country_code, points, change)
  *   - wfcr_rankings   (id, year, rank, country_code, points, change)
  *   - wspi_rankings   (id, year, rank, country_code, points, change)
- *   - merit_rankings  (id, year, rank, country_code, points, change)
+ *   - merit_rankings  (id, year, rank, country_code, points, final_points, change)
+ *
+ * NOTE: the Merit ranking is displayed from `final_points` (its 0-100 normalised
+ * score), not `points`. See POINTS_COLUMN below.
  */
 
 import { supabase, isSupabaseConfigured } from './supabase'
@@ -43,6 +46,31 @@ const TABLE: Record<RankingType, string> = {
 }
 
 /**
+ * Which column holds the score to display, per ranking.
+ *
+ * Merit is the exception: it shows `final_points` (a 0-100 normalised score)
+ * rather than `points`. Every query aliases the column back to `points`
+ * (`points:final_points`), so the rest of the app is unaffected.
+ */
+const POINTS_COLUMN: Record<RankingType, string> = {
+  wrces:  'points',
+  wfcr:   'points',
+  wspi:   'points',
+  merit:  'final_points',
+}
+
+/**
+ * Whether this ranking reads its score from `final_points` instead of `points`.
+ *
+ * Each call site picks between two *string literals* rather than interpolating,
+ * because supabase-js parses the select() string at the type level and cannot
+ * infer a row shape from a template literal.
+ */
+export function usesFinalPoints(type: RankingType): boolean {
+  return POINTS_COLUMN[type] === 'final_points'
+}
+
+/**
  * Fetch a full ranking table for a given type and year.
  * Optionally filter by continent code.
  */
@@ -55,13 +83,9 @@ export async function getRankings(
 
   let query = supabase
     .from(TABLE[type])
-    .select(`
-      rank,
-      country_code,
-      points,
-      change,
-      countries!inner ( name, iso_2, continent_code )
-    `)
+    .select(usesFinalPoints(type)
+      ? 'rank, country_code, points:final_points, change, countries!inner ( name, iso_2, continent_code )'
+      : 'rank, country_code, points, change, countries!inner ( name, iso_2, continent_code )')
     .eq('year', year)
     .order('rank', { ascending: true })
 
@@ -220,7 +244,9 @@ export async function getCountryProfile(iso2: string): Promise<{
     const latestYear = await getLatestYear(type)
     const { data } = await supabase
       .from(TABLE[type])
-      .select('rank, country_code, points, change')
+      .select(usesFinalPoints(type)
+        ? 'rank, country_code, points:final_points, change'
+        : 'rank, country_code, points, change')
       .eq('country_code', country.code)
       .eq('year', latestYear)
       .single()
@@ -253,10 +279,9 @@ export async function getTopCountries(
 
   const { data, error } = await supabase
     .from(TABLE[type])
-    .select(`
-      rank, country_code, points, change,
-      countries!inner ( name, iso_2, continent_code )
-    `)
+    .select(usesFinalPoints(type)
+      ? 'rank, country_code, points:final_points, change, countries!inner ( name, iso_2, continent_code )'
+      : 'rank, country_code, points, change, countries!inner ( name, iso_2, continent_code )')
     .eq('year', year)
     .order('rank', { ascending: true })
     .limit(limit)
