@@ -153,31 +153,33 @@ export default async function RankingLandingPage({ params }: { params: { slug: s
               {year} {status} Ranking
             </h2>
             <div className="bg-white rounded-2xl shadow ring-1 ring-gray-100 overflow-hidden">
+              <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="text-gray-400 text-[11px] uppercase tracking-wider border-b border-gray-100">
-                    <th className="text-left font-semibold px-5 py-3 w-14">Rank</th>
+                    <th className="text-left font-semibold px-3 sm:px-5 py-3 w-14">Rank</th>
                     <th className="text-left font-semibold px-2 py-3">Country</th>
-                    <th className="text-right font-semibold px-5 py-3">Points</th>
-                    <th className="text-center font-semibold px-5 py-3 w-20">Change</th>
+                    <th className="text-right font-semibold px-3 sm:px-5 py-3">Points</th>
+                    <th className="text-center font-semibold px-2 sm:px-5 py-3 w-16 sm:w-20">Change</th>
                   </tr>
                 </thead>
                 <tbody>
                   {rows.map((r) => (
                     <tr key={r.country_code} className="odd:bg-white even:bg-slate-50 hover:bg-slate-100 transition-colors border-b border-gray-50 last:border-0">
-                      <td className="px-5 py-3 font-bold text-wsr-navy tabular-nums">{r.rank}</td>
+                      <td className="px-3 sm:px-5 py-3 font-bold text-wsr-navy tabular-nums">{r.rank}</td>
                       <td className="px-2 py-3">
-                        <Link href={`/countries/${r.iso_2.toLowerCase()}`} className="flex items-center gap-3 group">
+                        <Link href={`/countries/${r.iso_2.toLowerCase()}`} className="flex items-center gap-2 sm:gap-3 group">
                           <CountryFlag iso2={r.iso_2} name={r.country_name} />
                           <span className="font-medium text-wsr-navy group-hover:text-wsr-blue group-hover:underline">{r.country_name}</span>
                         </Link>
                       </td>
-                      <td className="px-5 py-3 text-right font-semibold text-gray-700 tabular-nums">{Math.round(Number(r.points)).toLocaleString()}</td>
-                      <td className="px-5 py-3 text-center"><RankChange change={r.change} /></td>
+                      <td className="px-3 sm:px-5 py-3 text-right font-semibold text-gray-700 tabular-nums">{Math.round(Number(r.points)).toLocaleString()}</td>
+                      <td className="px-2 sm:px-5 py-3 text-center"><RankChange change={r.change} /></td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+              </div>
             </div>
             <p className="text-center mt-4">
               <Link href="/rankings" className="text-sm text-wsr-blue hover:underline">Explore all years &amp; filters in the full rankings →</Link>

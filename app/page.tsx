@@ -115,41 +115,47 @@ export default async function HomePage() {
             </Link>
           </div>
 
+          <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-gray-50 text-gray-500 uppercase text-xs">
               <tr>
-                <th className="px-6 py-3 text-left w-12">Rank</th>
-                <th className="px-6 py-3 text-left w-10">Flag</th>
-                <th className="px-6 py-3 text-left">Country</th>
-                <th className="px-6 py-3 text-right">Points</th>
-                <th className="px-6 py-3 text-center w-16">Change</th>
+                <th className="px-3 sm:px-6 py-3 text-left w-12">Rank</th>
+                {/* Flag folds into the Country cell on phones — see /rankings */}
+                <th className="hidden sm:table-cell px-6 py-3 text-left w-10">Flag</th>
+                <th className="px-3 sm:px-6 py-3 text-left">Country</th>
+                <th className="px-3 sm:px-6 py-3 text-right">Points</th>
+                <th className="px-2 sm:px-6 py-3 text-center w-16">Change</th>
               </tr>
             </thead>
             <tbody>
               {top5.map((row) => (
                 <tr key={row.country_code} className="odd:bg-white even:bg-slate-50 hover:bg-slate-100 transition-colors border-b border-gray-50 last:border-0">
-                  <td className="px-6 py-3 font-bold text-wsr-navy">{row.rank}</td>
-                  <td className="px-6 py-3">
+                  <td className="px-3 sm:px-6 py-3 font-bold text-wsr-navy tabular-nums">{row.rank}</td>
+                  <td className="hidden sm:table-cell px-6 py-3">
                     <CountryFlag iso2={row.iso_2} name={row.country_name} />
                   </td>
-                  <td className="px-6 py-3">
+                  <td className="px-3 sm:px-6 py-3">
                     <Link
                       href={`/countries/${row.iso_2.toLowerCase()}`}
-                      className="text-wsr-blue font-medium hover:underline"
+                      className="flex items-center gap-2 text-wsr-blue font-medium hover:underline"
                     >
+                      <span className="sm:hidden shrink-0">
+                        <CountryFlag iso2={row.iso_2} name={row.country_name} />
+                      </span>
                       {row.country_name}
                     </Link>
                   </td>
-                  <td className="px-6 py-3 text-right font-semibold text-gray-700">
+                  <td className="px-3 sm:px-6 py-3 text-right font-semibold text-gray-700 tabular-nums">
                     {Math.round(row.points).toLocaleString()}
                   </td>
-                  <td className="px-6 py-3 text-center">
+                  <td className="px-2 sm:px-6 py-3 text-center">
                     <RankChange change={row.change} />
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+          </div>
 
           <div className="px-6 py-4 border-t border-gray-100 text-center">
             <Link href="/rankings" className="btn-primary inline-block text-sm">

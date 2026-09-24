@@ -224,53 +224,63 @@ export default function RankingsPage() {
 
         {/* Table */}
         <div className="bg-white rounded-2xl shadow overflow-hidden">
+          {/* overflow-x-auto is a safety net: if a very long country name still
+              overflows on a narrow phone, the table can be swiped rather than
+              silently clipping the Points column. */}
+          <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="bg-gray-50 text-gray-500 uppercase text-xs border-b border-gray-100">
               <tr>
-                <th className="px-6 py-3 text-left w-14">Rank</th>
-                <th className="px-6 py-3 text-left w-10">Flag</th>
-                <th className="px-6 py-3 text-left">Country</th>
-                <th className="px-6 py-3 text-right">Points</th>
-                <th className="px-6 py-3 text-center w-20">Change</th>
+                <th className="px-3 sm:px-6 py-3 text-left w-14">Rank</th>
+                {/* On phones the flag moves inline into the Country cell, so this
+                    column (and its padding) is dropped entirely. */}
+                <th className="hidden sm:table-cell px-6 py-3 text-left w-10">Flag</th>
+                <th className="px-3 sm:px-6 py-3 text-left">Country</th>
+                <th className="px-3 sm:px-6 py-3 text-right">Points</th>
+                <th className="px-2 sm:px-6 py-3 text-center w-16 sm:w-20">Change</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center text-gray-400 italic">
+                  <td colSpan={5} className="px-3 sm:px-6 py-12 text-center text-gray-400 italic">
                     Loading…
                   </td>
                 </tr>
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center text-gray-400">
+                  <td colSpan={5} className="px-3 sm:px-6 py-12 text-center text-gray-400">
                     No results found for this ranking and year.
                   </td>
                 </tr>
               ) : filtered.map((row) => (
                 <tr key={row.country_code} className="odd:bg-white even:bg-slate-50 hover:bg-slate-100 transition-colors border-b border-gray-50 last:border-0">
-                  <td className="px-6 py-3 font-bold text-wsr-navy">{row.rank}</td>
-                  <td className="px-6 py-3">
+                  <td className="px-3 sm:px-6 py-3 font-bold text-wsr-navy tabular-nums">{row.rank}</td>
+                  <td className="hidden sm:table-cell px-6 py-3">
                     <CountryFlag iso2={row.iso_2} name={row.country_name} />
                   </td>
-                  <td className="px-6 py-3">
+                  <td className="px-3 sm:px-6 py-3">
                     <Link
                       href={`/countries/${row.iso_2.toLowerCase()}`}
-                      className="text-wsr-blue font-medium hover:underline"
+                      className="flex items-center gap-2 text-wsr-blue font-medium hover:underline"
                     >
+                      <span className="sm:hidden shrink-0">
+                        <CountryFlag iso2={row.iso_2} name={row.country_name} />
+                      </span>
                       {row.country_name}
                     </Link>
                   </td>
-                  <td className="px-6 py-3 text-right font-semibold text-gray-700">
+                  <td className="px-3 sm:px-6 py-3 text-right font-semibold text-gray-700 tabular-nums">
                     {Math.round(Number(row.points)).toLocaleString()}
                   </td>
-                  <td className="px-6 py-3 text-center">
+                  <td className="px-2 sm:px-6 py-3 text-center">
                     <RankChange change={row.change} />
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+          </div>
         </div>
 
         <p className="text-center text-xs text-gray-400 mt-6">
