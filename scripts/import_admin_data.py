@@ -32,6 +32,7 @@ changed with WSR_DATA_YEAR=2027.
 
 import collections
 import datetime as dt
+import json
 import os
 import sys
 from pathlib import Path
@@ -51,24 +52,15 @@ COUNTRIES_FILE = DATA_DIR / "COUNTRIESLIST.xlsx"
 
 BATCH_SIZE = 1000
 
-# Spellings found in the workbooks → canonical COUNTRIESLIST name. Excel's
+# Spellings found in the workbooks → canonical COUNTRIESLIST name, shared with
+# the dashboard's "Upload Excel" tab (lib/admin/countryAliases.json). Excel's
 # lookups are case-insensitive so mixed case already matches; these are the
-# typos / old names that don't. Names not listed here and not in COUNTRIESLIST
+# typos / old names that don't. Names not listed there and not in COUNTRIESLIST
 # (e.g. CURAÇAO, BONAIRE — not NOCs) are kept as-is with no country code.
 ALIASES = {
-    "ARBUA":                    "ARUBA",
-    "BHR":                      "BAHRAIN",
-    "CYRUS":                    "CYPRUS",
-    "CZECH REPUPLIC":           "CZECHIA",
-    "CZECH REPUBLIC":           "CZECHIA",
-    "MACEDONIA":                "NORTH MACEDONIA",
-    "NETHERLNADS":              "NETHERLANDS",
-    "SWAZILAND":                "ESWATINI",
-    "TURKEY":                   "TURKIYE",
-    "TÜRKIYE":                  "TURKIYE",
-    "UNITED STATES OF AMERICA": "USA",
-    "CÔTE D'IVOIRE":            "IVORY COAST",
-    "COTE D'IVOIRE":            "IVORY COAST",
+    k: v for k, v in json.loads(
+        (Path(__file__).parent.parent / "lib" / "admin" / "countryAliases.json").read_text(encoding="utf-8")
+    ).items() if not k.startswith("_")
 }
 
 
@@ -248,7 +240,7 @@ def get_client():
 def dashboard_edits_since_last_import(client):
     res = client.table("ds_settings").select("value").eq("key", "last_import").execute()
     last = res.data[0]["value"]["at"] if res.data else None
-    q = client.table("ds_audit_log").select("id", count="exact").neq("username", "import")
+    q = client.table("ds_audit_log").select("id", count="exact").neq("action", "import")
     if last:
         q = q.gt("at", last)
     return q.limit(1).execute().count or 0

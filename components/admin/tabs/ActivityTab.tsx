@@ -22,7 +22,7 @@ const FIELDS = ['year', 'sport', 'rank', 'country', 'points', 'progress']
 
 function describe(r: LogRow): string {
   const row = r.after ?? r.before
-  if (r.action === 'import') return `Workbook import (${r.after?.entries ?? '?'} entries, ${r.after?.final_rank ?? '?'} final-rank rows)`
+  if (r.action === 'import') return `Loaded ${r.after?.source ?? 'workbook'} (${r.after?.entries ?? '?'} entries, ${r.after?.final_rank ?? '?'} final-rank rows)`
   if (r.action === 'recompute') return `Rebuilt ${r.record_id} final ranking from entries (${r.before?.rows ?? '?'} → ${r.after?.rows ?? '?'} rows)`
   if (r.table_name === 'ds_settings') return `Latest sports ${r.after ? `set to ${((r.after as { sports?: string[] }).sports ?? []).join(', ') || 'none'}` : 'cleared'}`
   if (!row) return ''

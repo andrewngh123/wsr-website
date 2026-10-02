@@ -162,13 +162,28 @@ never written in the code).
    Reset one person's password later with `npm run admin:seed -- maya`
    (this also signs them out everywhere).
 
+### Monthly update (no terminal needed)
+
+1. Update and **save** your Excel file as usual, then close it.
+2. Open the dashboard → **Upload Excel** tab.
+3. Drag in `DATA STORAGE & ANALYSIS <year>.xlsx` (plus `FINALRANKING<year>.xlsx`
+   if the "latest sports added" list changed).
+4. Check the preview: entries per year, now vs in the file, plus any warnings.
+5. Click **Replace data**. It's all-or-nothing: if anything fails, the
+   previous data stays exactly as it was.
+
+The terminal import (`npm run admin:import`) still works and does the same thing.
+
 ### Good to know
 
 - Edits in the dashboard change the Supabase copy only, not the Excel files.
   Use **Data & editing → Export CSV** to bring them back into Excel.
-- Re-running the import replaces all `ds_*` data with the workbook contents.
-  If anyone has edited in the dashboard since the last import, it stops
-  and asks for `--force`.
+- Uploading (or re-running the import) replaces all `ds_*` data with the
+  workbook contents. If anyone has edited in the dashboard since the last
+  upload, it warns first (the upload tab asks you to tick a box; the
+  terminal import asks for `--force`).
+- If a new country typo shows up as "not in COUNTRIESLIST", fix it in Excel,
+  or add it to `lib/admin/countryAliases.json`.
 - The dashboard never changes the public rankings tables
   (`wrces_rankings` etc.). Those are still updated with `scripts/import_data.py`.
 - 5 wrong passwords lock that account for 15 minutes.

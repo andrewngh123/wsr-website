@@ -10,6 +10,7 @@ import CountryTab from './tabs/CountryTab'
 import SportTab from './tabs/SportTab'
 import EntriesTab from './tabs/EntriesTab'
 import ActivityTab from './tabs/ActivityTab'
+import UploadTab from './tabs/UploadTab'
 
 const TABS: { key: Tab; label: string }[] = [
   { key: 'standings', label: 'Current standings' },
@@ -17,6 +18,7 @@ const TABS: { key: Tab; label: string }[] = [
   { key: 'country',   label: 'Countries' },
   { key: 'sport',     label: 'Sports' },
   { key: 'entries',   label: 'Data & editing' },
+  { key: 'upload',    label: 'Upload Excel' },
   { key: 'activity',  label: 'Activity' },
 ]
 
@@ -62,7 +64,7 @@ export default function AdminDashboard({ user }: { user: { display_name: string 
             <h1 className="text-2xl font-extrabold">Data desk</h1>
             {meta?.lastImport && (
               <p className="text-xs text-white/60 mt-1">
-                Imported from {meta.lastImport.source} on {fmtDate(meta.lastImport.at)}
+                Data from {meta.lastImport.source}, loaded {fmtDate(meta.lastImport.at)}{meta.lastImport.by ? ` by ${meta.lastImport.by}` : ''}
               </p>
             )}
           </div>
@@ -92,10 +94,8 @@ export default function AdminDashboard({ user }: { user: { display_name: string 
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
         <ErrorNote error={error} />
-        {!meta ? (!error && <Loading />) : meta.years.length === 0 ? (
-          <p className="bg-white rounded-xl p-6 text-sm text-gray-600">
-            No data yet — run <code>scripts/import_admin_data.py</code> to load the workbooks.
-          </p>
+        {!meta ? (!error && <Loading />) : tab === 'upload' || meta.years.length === 0 ? (
+          <UploadTab meta={meta} onDone={loadMeta} />
         ) : (
           <>
             {tab === 'standings' && <StandingsTab meta={meta} nav={nav} onMetaChange={loadMeta} />}

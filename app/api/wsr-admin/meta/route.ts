@@ -15,7 +15,7 @@ export async function GET(req: Request) {
     getCategories(),
     getCountries(),
     getSetting<LatestSports>('latest_sports'),
-    getSetting<{ at: string; source: string }>('last_import'),
+    getSetting<{ at: string; source: string; by?: string }>('last_import'),
     db.rpc('ds_year_summary').then((r) => r.data ?? []),
     db.from('ds_final_rank').select('year').order('year', { ascending: false }).limit(1)
       .then((r) => r.data?.[0]?.year ?? null),

@@ -12,7 +12,7 @@ export interface Meta {
   categories: Category[]
   countries: Country[]
   latestSports: { year: number; sports: string[] } | null
-  lastImport: { at: string; source: string } | null
+  lastImport: { at: string; source: string; by?: string } | null
   summary: { year: number; entries: number; sports: number; countries: number; points: number }[]
 }
 
@@ -40,7 +40,7 @@ export interface FinalRankRow {
   entries_rank?: number | null
 }
 
-export type Tab = 'standings' | 'final' | 'country' | 'sport' | 'entries' | 'activity'
+export type Tab = 'standings' | 'final' | 'country' | 'sport' | 'entries' | 'upload' | 'activity'
 
 /** Cross-tab navigation, e.g. clicking a country anywhere opens its history. */
 export interface Nav {

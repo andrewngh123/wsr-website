@@ -1,0 +1,16 @@
+{
+  "_comment": "Spellings found in the workbooks -> canonical COUNTRIESLIST name. Used by the dashboard upload AND scripts/import_admin_data.py. Add a line here when a new typo appears.",
+  "ARBUA": "ARUBA",
+  "BHR": "BAHRAIN",
+  "CYRUS": "CYPRUS",
+  "CZECH REPUPLIC": "CZECHIA",
+  "CZECH REPUBLIC": "CZECHIA",
+  "MACEDONIA": "NORTH MACEDONIA",
+  "NETHERLNADS": "NETHERLANDS",
+  "SWAZILAND": "ESWATINI",
+  "TURKEY": "TURKIYE",
+  "TÜRKIYE": "TURKIYE",
+  "UNITED STATES OF AMERICA": "USA",
+  "CÔTE D'IVOIRE": "IVORY COAST",
+  "COTE D'IVOIRE": "IVORY COAST"
+}

@@ -94,7 +94,7 @@ create table if not exists ds_audit_log (
   id         bigserial   primary key,
   at         timestamptz not null default now(),
   username   text        not null,
-  action     text        not null,     -- create | update | delete | recompute | settings
+  action     text        not null,     -- create | update | delete | recompute | settings | import
   table_name text        not null,
   record_id  text,
   before     jsonb,
@@ -102,6 +102,40 @@ create table if not exists ds_audit_log (
 );
 
 create index if not exists idx_ds_audit_at on ds_audit_log(at desc);
+
+
+-- ── UPLOAD STAGING (dashboard "Upload Excel" tab) ────────────────────────────
+-- The browser reads the workbook and sends rows here in small batches; then
+-- ds_commit_import() swaps them into the real tables in ONE transaction, so a
+-- failed or half-finished upload never touches the live data.
+create table if not exists ds_import_entries (
+  import_id  uuid        not null,
+  year       integer     not null,
+  sport      text        not null,
+  rank       integer     not null,
+  country    text        not null,
+  points     numeric     not null,
+  created_at timestamptz not null default now()
+);
+create table if not exists ds_import_final_rank (
+  import_id  uuid        not null,
+  year       integer     not null,
+  rank       integer     not null,
+  country    text        not null,
+  points     numeric     not null,
+  progress   text,
+  created_at timestamptz not null default now()
+);
+create table if not exists ds_import_categories (
+  import_id  uuid        not null,
+  sport      text        not null,
+  type       text        not null,
+  note       text,
+  created_at timestamptz not null default now()
+);
+create index if not exists idx_ds_import_entries on ds_import_entries(import_id);
+create index if not exists idx_ds_import_final   on ds_import_final_rank(import_id);
+create index if not exists idx_ds_import_cats    on ds_import_categories(import_id);
 
 
 -- ============================================================
@@ -182,6 +216,61 @@ as $$
 $$;
 
 
+-- Replace categories, entries and final rank with a staged upload — all or
+-- nothing. Country codes are resolved here against ds_countries.
+create or replace function ds_commit_import(
+  p_import uuid, p_username text, p_source text, p_latest_sports jsonb default null
+)
+returns jsonb
+language plpgsql
+as $$
+declare
+  n_cats integer; n_entries integer; n_final integer;
+  v_now timestamptz := now();
+begin
+  select count(*) into n_cats    from ds_import_categories where import_id = p_import;
+  select count(*) into n_entries from ds_import_entries    where import_id = p_import;
+  select count(*) into n_final   from ds_import_final_rank where import_id = p_import;
+  if n_cats = 0 or n_entries = 0 or n_final = 0 then
+    raise exception 'Upload incomplete (categories %, entries %, final rank %) — nothing was changed.', n_cats, n_entries, n_final;
+  end if;
+
+  -- "where true": Supabase blocks DELETE without a WHERE clause.
+  delete from ds_entries    where true;
+  delete from ds_final_rank where true;
+  delete from ds_categories where true;
+
+  insert into ds_categories (sport, type, note)
+    select sport, type, note from ds_import_categories where import_id = p_import;
+  insert into ds_entries (year, sport, rank, country, country_code, points, updated_by, updated_at)
+    select s.year, s.sport, s.rank, s.country, c.code, s.points, 'import', v_now
+    from ds_import_entries s left join ds_countries c on c.name = s.country
+    where s.import_id = p_import;
+  insert into ds_final_rank (year, rank, country, country_code, points, progress)
+    select s.year, s.rank, s.country, c.code, s.points, s.progress
+    from ds_import_final_rank s left join ds_countries c on c.name = s.country
+    where s.import_id = p_import;
+
+  if p_latest_sports is not null then
+    insert into ds_settings (key, value, updated_at) values ('latest_sports', p_latest_sports, v_now)
+    on conflict (key) do update set value = excluded.value, updated_at = excluded.updated_at;
+  end if;
+  insert into ds_settings (key, value, updated_at)
+    values ('last_import', jsonb_build_object('at', v_now, 'source', p_source, 'by', p_username), v_now)
+  on conflict (key) do update set value = excluded.value, updated_at = excluded.updated_at;
+  insert into ds_audit_log (username, action, table_name, after)
+    values (p_username, 'import', 'ds_*',
+            jsonb_build_object('entries', n_entries, 'final_rank', n_final, 'categories', n_cats, 'source', p_source));
+
+  delete from ds_import_entries    where import_id = p_import;
+  delete from ds_import_final_rank where import_id = p_import;
+  delete from ds_import_categories where import_id = p_import;
+
+  return jsonb_build_object('entries', n_entries, 'final_rank', n_final, 'categories', n_cats);
+end
+$$;
+
+
 -- ============================================================
 --  Lock everything down — service_role only
 -- ============================================================
@@ -193,19 +282,25 @@ alter table ds_entries    enable row level security;
 alter table ds_final_rank enable row level security;
 alter table ds_settings   enable row level security;
 alter table ds_audit_log  enable row level security;
+alter table ds_import_entries    enable row level security;
+alter table ds_import_final_rank enable row level security;
+alter table ds_import_categories enable row level security;
 -- (No policies on purpose: with RLS on and no policy, anon/authenticated see nothing.)
 
 revoke all on admin_users, ds_countries, ds_categories, ds_entries,
-              ds_final_rank, ds_settings, ds_audit_log
+              ds_final_rank, ds_settings, ds_audit_log,
+              ds_import_entries, ds_import_final_rank, ds_import_categories
   from anon, authenticated;
 
 revoke execute on function ds_years(), ds_year_summary(),
                            ds_sport_pivot(text, integer), ds_sport_summary(integer),
-                           ds_standings(integer, text[])
+                           ds_standings(integer, text[]),
+                           ds_commit_import(uuid, text, text, jsonb)
   from public, anon, authenticated;
 grant execute on function ds_years(), ds_year_summary(),
                           ds_sport_pivot(text, integer), ds_sport_summary(integer),
-                           ds_standings(integer, text[])
+                           ds_standings(integer, text[]),
+                           ds_commit_import(uuid, text, text, jsonb)
   to service_role;
 
 -- Tell PostgREST to pick up the new tables/functions immediately.
