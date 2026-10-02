@@ -159,8 +159,17 @@ never written in the code).
    ```
    SUPABASE_SERVICE_KEY="sb_secret_..." npm run admin:seed
    ```
-   Reset one person's password later with `npm run admin:seed -- maya`
-   (this also signs them out everywhere).
+   Everyone can change their own password later from the dashboard
+   (see "Changing passwords" below).
+
+### Changing passwords
+
+- **Your own password:** in the dashboard, click **Change password** (top right),
+  enter your current password and the new one (12+ characters). Any other
+  devices you were signed in on are signed out.
+- **Someone forgot theirs:** reset it from the terminal (needs the secret key):
+  `SUPABASE_SERVICE_KEY="sb_secret_..." npm run admin:seed -- maya`
+  (use `nadim`, `andrew` or `maya`). This also unlocks a locked account.
 
 ### Monthly update (no terminal needed)
 

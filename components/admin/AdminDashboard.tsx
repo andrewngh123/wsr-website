@@ -11,6 +11,7 @@ import SportTab from './tabs/SportTab'
 import EntriesTab from './tabs/EntriesTab'
 import ActivityTab from './tabs/ActivityTab'
 import UploadTab from './tabs/UploadTab'
+import PasswordModal from './PasswordModal'
 
 const TABS: { key: Tab; label: string }[] = [
   { key: 'standings', label: 'Current standings' },
@@ -29,6 +30,7 @@ export default function AdminDashboard({ user }: { user: { display_name: string 
   const [country, setCountry] = useState('')
   const [sport, setSport] = useState<{ sport: string; year: number | null }>({ sport: '', year: null })
   const [entryFilters, setEntryFilters] = useState<Partial<EntryFilters>>({})
+  const [changingPassword, setChangingPassword] = useState(false)
 
   const loadMeta = useCallback(() => {
     api<Meta>('/meta').then(setMeta).catch((e) => setError(e.message))
@@ -68,8 +70,9 @@ export default function AdminDashboard({ user }: { user: { display_name: string 
               </p>
             )}
           </div>
-          <div className="flex items-center gap-3 text-sm">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-sm">
             <span className="text-white/80">Signed in as <strong className="text-white">{user.display_name}</strong></span>
+            <button onClick={() => setChangingPassword(true)} className="rounded-lg border border-white/20 px-3 py-1.5 hover:bg-white/10">Change password</button>
             <button onClick={logout} className="rounded-lg border border-white/20 px-3 py-1.5 hover:bg-white/10">Sign out</button>
           </div>
         </div>
@@ -107,6 +110,7 @@ export default function AdminDashboard({ user }: { user: { display_name: string 
           </>
         )}
       </div>
+      {changingPassword && <PasswordModal onClose={() => setChangingPassword(false)} />}
     </div>
   )
 }

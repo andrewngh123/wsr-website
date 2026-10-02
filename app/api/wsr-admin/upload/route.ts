@@ -17,7 +17,9 @@ export async function GET(req: Request) {
   if (auth instanceof Response) return auth
 
   const lastImport = await getSetting<{ at: string; source: string; by?: string }>('last_import')
-  let q = adminDb().from('ds_audit_log').select('id', { count: 'exact', head: true }).neq('action', 'import')
+  let q = adminDb().from('ds_audit_log')
+    .select('id', { count: 'exact', head: true })
+    .not('action', 'in', '(import,password)') // only data edits count
   if (lastImport?.at) q = q.gt('at', lastImport.at)
   const { count, error } = await q
   if (error) return badRequest(error.message)

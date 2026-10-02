@@ -240,7 +240,7 @@ def get_client():
 def dashboard_edits_since_last_import(client):
     res = client.table("ds_settings").select("value").eq("key", "last_import").execute()
     last = res.data[0]["value"]["at"] if res.data else None
-    q = client.table("ds_audit_log").select("id", count="exact").neq("action", "import")
+    q = client.table("ds_audit_log").select("id", count="exact").not_.in_("action", ["import", "password"])
     if last:
         q = q.gt("at", last)
     return q.limit(1).execute().count or 0

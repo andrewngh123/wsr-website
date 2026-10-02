@@ -16,7 +16,7 @@ interface LogRow {
 }
 
 const TABLE_LABEL: Record<string, string> = {
-  ds_entries: 'Entry', ds_final_rank: 'Final rank', ds_settings: 'Setting', 'ds_*': 'All data',
+  ds_entries: 'Entry', ds_final_rank: 'Final rank', ds_settings: 'Setting', admin_users: 'Account', 'ds_*': 'All data',
 }
 const FIELDS = ['year', 'sport', 'rank', 'country', 'points', 'progress']
 
@@ -24,6 +24,7 @@ function describe(r: LogRow): string {
   const row = r.after ?? r.before
   if (r.action === 'import') return `Loaded ${r.after?.source ?? 'workbook'} (${r.after?.entries ?? '?'} entries, ${r.after?.final_rank ?? '?'} final-rank rows)`
   if (r.action === 'recompute') return `Rebuilt ${r.record_id} final ranking from entries (${r.before?.rows ?? '?'} → ${r.after?.rows ?? '?'} rows)`
+  if (r.action === 'password') return 'Changed their password'
   if (r.table_name === 'ds_settings') return `Latest sports ${r.after ? `set to ${((r.after as { sports?: string[] }).sports ?? []).join(', ') || 'none'}` : 'cleared'}`
   if (!row) return ''
   const label = [row.year, row.sport, row.country].filter(Boolean).join(' · ')
@@ -37,7 +38,7 @@ function describe(r: LogRow): string {
 
 const ACTION_STYLE: Record<string, string> = {
   create: 'bg-green-50 text-green-700', update: 'bg-blue-50 text-blue-700', delete: 'bg-red-50 text-red-700',
-  recompute: 'bg-amber-50 text-amber-700', settings: 'bg-gray-100 text-gray-600', import: 'bg-violet-50 text-violet-700',
+  recompute: 'bg-amber-50 text-amber-700', password: 'bg-gray-100 text-gray-600', settings: 'bg-gray-100 text-gray-600', import: 'bg-violet-50 text-violet-700',
 }
 
 /** Who changed what — the last 200 dashboard changes. */
