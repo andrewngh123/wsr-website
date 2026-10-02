@@ -128,3 +128,48 @@ wsr-website/
 │   └── schema.sql                  ← Database table definitions
 └── tailwind.config.ts              ← Colors & design tokens
 ```
+
+---
+
+## Hidden admin dashboard ("Data desk")
+
+A private dashboard for Nadim, Andrew and Maya to browse and edit the
+DATA STORAGE / FINALRANKING data. It is not linked anywhere, and only answers
+at a secret URL that is set in Vercel (this repo is public, so the URL is
+never written in the code).
+
+### One-time setup
+
+1. **Create the private tables.** In Supabase → SQL Editor, paste and run
+   `scripts/admin_schema.sql`. (Safe to re-run.) These `ds_*` tables are
+   locked: the public website's key cannot read them.
+2. **Add three env vars in Vercel** → Settings → Environment Variables
+   (Production), then redeploy. Do NOT prefix them with `NEXT_PUBLIC_`.
+   - `ADMIN_PATH` — the secret URL segment. Generate one with `openssl rand -hex 12`.
+     The dashboard is then at `https://sportsrankings.world/<ADMIN_PATH>`.
+   - `ADMIN_SESSION_SECRET` — `openssl rand -base64 48`
+   - `SUPABASE_SERVICE_KEY` — Supabase → Settings → API → secret (service_role) key
+3. **Load the data** from the Excel files (read straight from `../Ranking 26/`):
+   ```
+   .venv/bin/pip install openpyxl supabase      # first time only
+   npm run admin:import -- --dry-run            # check, uploads nothing
+   SUPABASE_SERVICE_KEY="sb_secret_..." npm run admin:import
+   ```
+4. **Create the three logins** (you'll be asked for each password — 12+ characters):
+   ```
+   SUPABASE_SERVICE_KEY="sb_secret_..." npm run admin:seed
+   ```
+   Reset one person's password later with `npm run admin:seed -- maya`
+   (this also signs them out everywhere).
+
+### Good to know
+
+- Edits in the dashboard change the Supabase copy only, not the Excel files.
+  Use **Data & editing → Export CSV** to bring them back into Excel.
+- Re-running the import replaces all `ds_*` data with the workbook contents.
+  If anyone has edited in the dashboard since the last import, it stops
+  and asks for `--force`.
+- The dashboard never changes the public rankings tables
+  (`wrces_rankings` etc.). Those are still updated with `scripts/import_data.py`.
+- 5 wrong passwords lock that account for 15 minutes.
+- To switch the dashboard off, delete `ADMIN_PATH` in Vercel and redeploy.

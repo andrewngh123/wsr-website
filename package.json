@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "admin:seed": "node --env-file-if-exists=.env.local scripts/seed_admin_users.mjs",
+    "admin:import": ".venv/bin/python scripts/import_admin_data.py"
   },
   "dependencies": {
     "next": "14.2.5",
