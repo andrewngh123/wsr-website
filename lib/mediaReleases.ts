@@ -21,6 +21,7 @@ export const MEDIA_RELEASES: MediaSource[] = [
   {
     source: "Le Figaro",
     articles: [
+      { title: "Le Japon et sa «nouvelle vague» qui fait déjà peur à Léon Marchand", link: "https://www.lefigaro.fr/sports/autres-sports/le-japon-et-sa-nouvelle-vague-qui-fait-deja-peur-a-leon-marchand-20261004", date: "2026-10-04", image: "https://i.f1g.fr/media/cms/1200x630_crop/2026/10/04/1652deecad5e55364093a0ee5cdbb9b206d1ede3ac2c05d5cc90c013fee75f65.jpg" },
       { title: "Élections municipales, enjeu stratégique pour la puissance sportive de la France", link: "https://www.lefigaro.fr/sports/autres-sports/elections-municipales-enjeu-strategique-pour-la-puissance-sportive-de-la-france-20260311", date: "2026-03-11", image: "https://i.f1g.fr/media/cms/1200x630_crop/2026/03/11/2fe0043e7f78d4c489d4cff81bd4db67163b9637f13735fadf778e9563268eee.png" },
       { title: "La France est-il un pays de Sport?", link: "https://sportbusiness.club/la-france-est-il-un-pays-de-sport/", image: "https://images.ctfassets.net/urx0o1aho2r4/2PfkR8A2dxJutKN9YT5cF4/e0afdaaab4c123b982b1408db23d4dfd/WSR_LOGO.PNG" },
       { title: "Le classement WRCES l’affirme, la France est la deuxième nation sportive au monde", link: "https://www.lefigaro.fr/sports/autres-sports/le-classement-wrces-l-affirme-la-france-est-la-deuxieme-nation-sportive-au-monde-20250207", date: "2025-02-07", image: "https://images.ctfassets.net/urx0o1aho2r4/3YPHCnhLHP5EQM3WzjqYEn/c8fbe525fde858529c95eff40ae8d314/56_-_Le_Figaro.webp" },
