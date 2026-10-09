@@ -17,9 +17,6 @@ export const PUBLICATIONS: PubSection[] = [
     { citation: "Nassif, N. (2019). ¿ QUÉ FACTORES CONDUCEN A UNA POLÍTICA EXITOSA DE DEPORTES DE ÉLITE? (What Are the Factors Leading to a Successful National Elite Sport Policy?). Revista Española de Educación Física y Deportes (Spanish Journal for Physical Education and Sports), (426), 474-481." },
     { citation: "Nassif, N. (2018). World Ranking of Countries in Elite Sport. Rivista di Diritto ed Economia dello Sport, 14(2), 55-75." },
   ] },
-  { icon: "📜", heading: "Master Thesis", items: [
-    { citation: "Gabriel, M. (2026). Claiming identity on the world stage: Olympic performance in Kosovo, South Sudan, and Timor-Leste.", link: "https://amitos.library.uop.gr/items/9a57a01d-3900-49e6-966c-4eae530a5631" },
-  ] },
   { icon: "📚", heading: "Books", items: [
     { citation: "École de Guerre Économique & Sports Management School. (2026, 5 mai). Le sport au-dessus des conflits, l'arbitre d'un monde sous tension ? [Livre blanc].", link: "https://www.ege.fr/sites/ege.fr/files/media_files/sport_livre-blanc_executive-summary_25_26_V3.pdf" },
     { citation: "Storm, R. K., Troels Kollerup, J., & Klaus, N. (2024). Swedish elite sport: External evaluation." },
@@ -41,6 +38,9 @@ export const PUBLICATIONS: PubSection[] = [
     { citation: "Nassif, N. (2023) Measuring the Impact That Universities Have on Countries' Success in Elite Sport. Proceedings of the FISU World Conference, 29-31 July, 2023, Chengdu- China: FISU Edition, p.241" },
     { citation: "Nassif, N. (2018) Performance Index for Countries in Elite Sport. Proceedings of the International Scientific Congress \"Values, Traditions and Innovations of Modern Sport\", 18-20 April 2018, Minsk-Belarus: Belarusian State University of Physical Culture editions, pp. 10-11." },
     { citation: "Nassif, N. (2018) Analysis of the factors determining countries perfromances in elite sport. Proceedings of the International Scientific Congress \"Values, Traditions and Innovations of Modern Sport\", 18-20 April 2018, Minsk-Belarus: Belarusian State University of Physical Culture editions, pp. 8-9." },
+  ] },
+  { icon: "📜", heading: "Master Thesis", items: [
+    { citation: "Gabriel, M. (2026). Claiming identity on the world stage: Olympic performance in Kosovo, South Sudan, and Timor-Leste.", link: "https://amitos.library.uop.gr/items/9a57a01d-3900-49e6-966c-4eae530a5631" },
   ] },
   { icon: "📝", heading: "Book of Abstracts", items: [
     { citation: "Nassif, N. (2024) Olympic Program 2050 – Retaining the universality of the Olympic Games under a shifting global economy. Book of Abstracts of the 11th International Sport Business Symposium, August 8th, 2024, pp.17-18" },
