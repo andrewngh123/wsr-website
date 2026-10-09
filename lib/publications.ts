@@ -17,6 +17,9 @@ export const PUBLICATIONS: PubSection[] = [
     { citation: "Nassif, N. (2019). ¿ QUÉ FACTORES CONDUCEN A UNA POLÍTICA EXITOSA DE DEPORTES DE ÉLITE? (What Are the Factors Leading to a Successful National Elite Sport Policy?). Revista Española de Educación Física y Deportes (Spanish Journal for Physical Education and Sports), (426), 474-481." },
     { citation: "Nassif, N. (2018). World Ranking of Countries in Elite Sport. Rivista di Diritto ed Economia dello Sport, 14(2), 55-75." },
   ] },
+  { icon: "📜", heading: "Master Thesis", items: [
+    { citation: "Gabriel, M. (2026). Claiming identity on the world stage: Olympic performance in Kosovo, South Sudan, and Timor-Leste.", link: "https://amitos.library.uop.gr/items/9a57a01d-3900-49e6-966c-4eae530a5631" },
+  ] },
   { icon: "📚", heading: "Books", items: [
     { citation: "École de Guerre Économique & Sports Management School. (2026, 5 mai). Le sport au-dessus des conflits, l'arbitre d'un monde sous tension ? [Livre blanc].", link: "https://www.ege.fr/sites/ege.fr/files/media_files/sport_livre-blanc_executive-summary_25_26_V3.pdf" },
     { citation: "Storm, R. K., Troels Kollerup, J., & Klaus, N. (2024). Swedish elite sport: External evaluation." },
@@ -33,9 +36,6 @@ export const PUBLICATIONS: PubSection[] = [
     { citation: "Nassif, N & Keyrouz, K. (2022) Creating a Global Index Measuring Countries' Levels of Fitness: The \"World's Fittest Countries Ranking\" in the book Physical Education and Sport for Children, Youth and Adults and Healthy Active Living Researches – Best Practices - Situation. Slovakia: International Federation of Physical Education, pp. 265-276." },
     { citation: "Nassif, N (2022) Using Sport as a National Soft Power Strategy: The Case of Mixed Martial Arts in Bahrain in the book Reiche, D., & Brannagan, P. M. (Eds.). Routledge Handbook of Sport in the Middle East. Routledge, pp. 104-114." },
     { citation: "Nassif, N (2019) Developing a National Elite Sport Policy in an Arab Country: The Case of Lebanon in the book Sports, Society, and Politics in the Middle East. Great Britain: Oxford University Press, pp. 139-157." },
-  ] },
-  { icon: "📜", heading: "Master Thesis", items: [
-    { citation: "Gabriel, M. (2026). Claiming identity on the world stage: Olympic performance in Kosovo, South Sudan, and Timor-Leste.", link: "https://amitos.library.uop.gr/items/9a57a01d-3900-49e6-966c-4eae530a5631" },
   ] },
   { icon: "🎓", heading: "Conference Proceedings", items: [
     { citation: "Nassif, N. (2023) Measuring the Impact That Universities Have on Countries' Success in Elite Sport. Proceedings of the FISU World Conference, 29-31 July, 2023, Chengdu- China: FISU Edition, p.241" },
