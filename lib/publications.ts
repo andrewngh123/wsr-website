@@ -34,6 +34,9 @@ export const PUBLICATIONS: PubSection[] = [
     { citation: "Nassif, N (2022) Using Sport as a National Soft Power Strategy: The Case of Mixed Martial Arts in Bahrain in the book Reiche, D., & Brannagan, P. M. (Eds.). Routledge Handbook of Sport in the Middle East. Routledge, pp. 104-114." },
     { citation: "Nassif, N (2019) Developing a National Elite Sport Policy in an Arab Country: The Case of Lebanon in the book Sports, Society, and Politics in the Middle East. Great Britain: Oxford University Press, pp. 139-157." },
   ] },
+  { icon: "📜", heading: "Master Thesis", items: [
+    { citation: "Gabriel, M. (2026). Claiming identity on the world stage: Olympic performance in Kosovo, South Sudan, and Timor-Leste.", link: "https://amitos.library.uop.gr/items/9a57a01d-3900-49e6-966c-4eae530a5631" },
+  ] },
   { icon: "🎓", heading: "Conference Proceedings", items: [
     { citation: "Nassif, N. (2023) Measuring the Impact That Universities Have on Countries' Success in Elite Sport. Proceedings of the FISU World Conference, 29-31 July, 2023, Chengdu- China: FISU Edition, p.241" },
     { citation: "Nassif, N. (2018) Performance Index for Countries in Elite Sport. Proceedings of the International Scientific Congress \"Values, Traditions and Innovations of Modern Sport\", 18-20 April 2018, Minsk-Belarus: Belarusian State University of Physical Culture editions, pp. 10-11." },
