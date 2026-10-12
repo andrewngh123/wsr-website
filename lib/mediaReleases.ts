@@ -44,6 +44,7 @@ export const MEDIA_RELEASES: MediaSource[] = [
   {
     source: "MENA Region",
     articles: [
+      { title: "حال الرياضة العالمية ‖ أودكاست مع د. نديم ناصيف ‖ كركول بيروت", link: "https://www.youtube.com/watch?v=zAQKAM5sN4U", date: "2026-10-10", image: "https://i.ytimg.com/vi/zAQKAM5sN4U/hqdefault.jpg" },
       { title: "هل اللبنانيون يتحرّكون بما يكفي؟ د. نديم ناصيف يكشف واقع النشاط البدني في لبنان", link: "https://www.youtube.com/watch?v=PtDqdtFCp40", date: "2026-09-16", image: "https://i.ytimg.com/vi/PtDqdtFCp40/hqdefault.jpg" },
       { title: "نديم ناصيف: ما هي الأبعاد الجيوسياسية لكرة القدم؟ • فرانس 24 / FRANCE 24", link: "https://www.youtube.com/watch?v=JI4r09ib1dg", date: "2026-06-13", image: "https://i.ytimg.com/vi/JI4r09ib1dg/hqdefault.jpg" },
       { title: "WRCES إنجاز غير مسبوق: لبنان يتقدّم إلى المرتبة 89 في التصنيف الرياضي الدولي", link: "https://jezzinetahki.com/%D8%AA%D9%81%D8%A7%D8%B5%D9%8A%D9%8470343/", image: "https://images.ctfassets.net/urx0o1aho2r4/4Bxn6Vf7OwvSyNuXby1nWP/8e9693b26cbd2ec4d07d8298562d312d/je_news_70343_1771261269.28641ee0b0b52b916a5526eab2a9d3e9b24.jpg" },
