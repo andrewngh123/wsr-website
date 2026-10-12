@@ -29,7 +29,7 @@ export default function CountryTab({ meta, nav, country, setCountry }: {
   const [input, setInput] = useState(country)
   const [data, setData] = useState<History | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const [year, setYear] = useState<number | null>(null)
+  const [years, setYears] = useState<number[]>([])
   const [view, setView] = useState<'year' | 'matrix'>('year')
   const types = useMemo(() => new Map(meta.categories.map((c) => [c.sport, c.type])), [meta.categories])
   const info = meta.countries.find((c) => c.name === country)
@@ -40,7 +40,7 @@ export default function CountryTab({ meta, nav, country, setCountry }: {
     setData(null)
     setError(null)
     api<History>(`/country?country=${encodeURIComponent(country)}`)
-      .then((d) => { setData(d); setYear(d.breakdown[0]?.year ?? null) })
+      .then((d) => { setData(d); setYears(d.breakdown.length ? [d.breakdown[0].year] : []) })
       .catch((e) => setError(e.message))
   }, [country])
 
@@ -52,7 +52,38 @@ export default function CountryTab({ meta, nav, country, setCountry }: {
   const finals = data?.trend.filter((t) => !t.provisional) ?? []
   const best = finals.length ? finals.reduce((a, b) => (b.rank < a.rank ? b : a)) : null
   const latest = data?.trend[data.trend.length - 1]
-  const yearBlock = data?.breakdown.find((b) => b.year === year)
+
+  const toggleYear = (y: number) =>
+    setYears((cur) => cur.includes(y) ? (cur.length > 1 ? cur.filter((v) => v !== y) : cur) : [...cur, y])
+
+  // Points by sport, summed across the selected years; rank averaged over every entry.
+  const yearBlock = useMemo(() => {
+    if (!data || !years.length) return null
+    const picked = data.breakdown.filter((b) => years.includes(b.year))
+    const sports = new Map<string, { points: number; rankSum: number; entries: number; years: number }>()
+    for (const b of picked) {
+      for (const s of b.sports) {
+        const c = sports.get(s.sport) ?? { points: 0, rankSum: 0, entries: 0, years: 0 }
+        c.points += s.points
+        c.rankSum += s.avg_rank * s.entries
+        c.entries += s.entries
+        c.years += 1
+        sports.set(s.sport, c)
+      }
+    }
+    const total = picked.reduce((t, b) => t + b.total, 0)
+    return {
+      years: picked.map((b) => b.year).sort((a, b) => a - b),
+      total,
+      sports: [...sports.entries()]
+        .map(([sport, c]) => ({
+          sport, points: c.points, share: total ? c.points / total : 0,
+          avg_rank: c.rankSum / c.entries, entries: c.entries, years: c.years,
+        }))
+        .sort((a, b) => b.points - a.points),
+    }
+  }, [data, years])
+  const multi = (yearBlock?.years.length ?? 0) > 1
 
   // sport × year rank matrix
   const matrix = useMemo(() => {
@@ -136,7 +167,7 @@ export default function CountryTab({ meta, nav, country, setCountry }: {
               <div className="flex rounded-lg border border-gray-200 overflow-hidden text-sm">
                 {(['year', 'matrix'] as const).map((v) => (
                   <button key={v} onClick={() => setView(v)} className={`px-3 py-1.5 font-semibold ${view === v ? 'bg-wsr-navy text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}>
-                    {v === 'year' ? 'One year' : 'All years (rank)'}
+                    {v === 'year' ? 'By sport (points)' : 'All years (rank)'}
                   </button>
                 ))}
               </div>
@@ -144,13 +175,17 @@ export default function CountryTab({ meta, nav, country, setCountry }: {
           >
             {data.breakdown.length === 0 ? <Empty>No entries for this country.</Empty> : view === 'year' ? (
               <>
-                <div className="flex flex-wrap gap-1.5 mb-4">
+                <div className="flex flex-wrap items-center gap-1.5 mb-4">
                   {data.breakdown.map((b) => (
-                    <button key={b.year} onClick={() => setYear(b.year)}
-                      className={`px-3 py-1 rounded-full text-xs font-semibold ${year === b.year ? 'bg-wsr-navy text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'}`}>
+                    <button key={b.year} onClick={() => toggleYear(b.year)} aria-pressed={years.includes(b.year)}
+                      className={`px-3 py-1 rounded-full text-xs font-semibold ${years.includes(b.year) ? 'bg-wsr-navy text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'}`}>
                       {b.year}
                     </button>
                   ))}
+                  <span className="mx-1 h-4 border-l border-gray-200" />
+                  <button onClick={() => setYears(data.breakdown.map((b) => b.year))} className="px-2 py-1 text-xs font-semibold text-wsr-blue hover:underline">All</button>
+                  <button onClick={() => setYears([data.breakdown[0].year])} className="px-2 py-1 text-xs font-semibold text-wsr-blue hover:underline">Latest only</button>
+                  <span className="text-xs text-gray-400 ml-1">Click years to add or remove them — points are summed across the selection.</span>
                 </div>
                 {yearBlock && (
                   <div className="overflow-x-auto -mx-5">
@@ -160,7 +195,8 @@ export default function CountryTab({ meta, nav, country, setCountry }: {
                           <Th>Sport</Th>
                           <Th align="right">Points</Th>
                           <Th className="w-1/4 hidden sm:table-cell">% of total</Th>
-                          <Th align="right">Rank</Th>
+                          <Th align="right">{multi ? 'Avg rank' : 'Rank'}</Th>
+                          {multi && <Th align="right"># Years</Th>}
                           <Th align="right"># Entries</Th>
                         </tr>
                       </thead>
@@ -168,7 +204,7 @@ export default function CountryTab({ meta, nav, country, setCountry }: {
                         {yearBlock.sports.map((s) => (
                           <tr key={s.sport} className={rowCls}>
                             <td className={tdCls}>
-                              <button onClick={() => nav.openSport(s.sport, yearBlock.year)} className="inline-flex items-center gap-2 font-medium text-wsr-blue hover:underline">
+                              <button onClick={() => nav.openSport(s.sport, multi ? undefined : yearBlock.years[0])} className="inline-flex items-center gap-2 font-medium text-wsr-blue hover:underline">
                                 {s.sport} <TypeBadge type={types.get(s.sport)} />
                               </button>
                             </td>
@@ -182,15 +218,16 @@ export default function CountryTab({ meta, nav, country, setCountry }: {
                               </div>
                             </td>
                             <td className={numCls}>{Number.isInteger(s.avg_rank) ? s.avg_rank : s.avg_rank.toFixed(1)}</td>
-                            <td className={`${numCls} ${s.entries > 1 ? 'text-amber-700 font-semibold' : 'text-gray-400'}`} title={s.entries > 1 ? 'More than one entry this year — points are summed, rank averaged' : undefined}>{s.entries}</td>
+                            {multi && <td className={`${numCls} text-gray-500`}>{s.years}</td>}
+                            <td className={`${numCls} ${!multi && s.entries > 1 ? 'text-amber-700 font-semibold' : 'text-gray-400'}`} title={!multi && s.entries > 1 ? 'More than one entry this year — points are summed, rank averaged' : undefined}>{s.entries}</td>
                           </tr>
                         ))}
                       </tbody>
                       <tfoot>
                         <tr className="border-t border-gray-200 font-bold">
-                          <td className={tdCls}>Total · {yearBlock.sports.length} sports</td>
+                          <td className={tdCls}>Total · {yearBlock.sports.length} sports{multi ? ` · ${yearBlock.years.join(', ')}` : ''}</td>
                           <td className={numCls}>{fmtPts(yearBlock.total)}</td>
-                          <td className="hidden sm:table-cell" colSpan={3} />
+                          <td className="hidden sm:table-cell" colSpan={multi ? 4 : 3} />
                         </tr>
                       </tfoot>
                     </table>
