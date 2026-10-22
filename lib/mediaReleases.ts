@@ -44,7 +44,6 @@ export const MEDIA_RELEASES: MediaSource[] = [
   {
     source: "MENA Region",
     articles: [
-      { title: "Creating a fair and inclusive world sport ranking | Nadim Nassif | TEDxNDULouaize", link: "https://www.youtube.com/watch?v=7jloBprPpzQ", date: "2026-10-19", image: "https://i.ytimg.com/vi/7jloBprPpzQ/hqdefault.jpg" },
       { title: "حال الرياضة العالمية ‖ أودكاست مع د. نديم ناصيف ‖ كركول بيروت", link: "https://www.youtube.com/watch?v=zAQKAM5sN4U", date: "2026-10-10", image: "https://i.ytimg.com/vi/zAQKAM5sN4U/hqdefault.jpg" },
       { title: "هل اللبنانيون يتحرّكون بما يكفي؟ د. نديم ناصيف يكشف واقع النشاط البدني في لبنان", link: "https://www.youtube.com/watch?v=PtDqdtFCp40", date: "2026-09-16", image: "https://i.ytimg.com/vi/PtDqdtFCp40/hqdefault.jpg" },
       { title: "نديم ناصيف: ما هي الأبعاد الجيوسياسية لكرة القدم؟ • فرانس 24 / FRANCE 24", link: "https://www.youtube.com/watch?v=JI4r09ib1dg", date: "2026-06-13", image: "https://i.ytimg.com/vi/JI4r09ib1dg/hqdefault.jpg" },
@@ -128,6 +127,12 @@ export const MEDIA_RELEASES: MediaSource[] = [
     source: "Observatoire du Sport Business",
     articles: [
       { title: "Pourquoi le World Sport Rankings est utile pour le développement du sport africain ?", link: "https://www.youtube.com/watch?v=wFby09zPxTE", date: "2026-06-13", image: "https://images.ctfassets.net/urx0o1aho2r4/2PfkR8A2dxJutKN9YT5cF4/e0afdaaab4c123b982b1408db23d4dfd/WSR_LOGO.PNG" },
+    ],
+  },
+  {
+    source: "TEDx",
+    articles: [
+      { title: "Creating a fair and inclusive world sport ranking | Nadim Nassif | TEDxNDULouaize", link: "https://www.youtube.com/watch?v=7jloBprPpzQ", date: "2026-10-19", image: "https://i.ytimg.com/vi/7jloBprPpzQ/hqdefault.jpg" },
     ],
   },
   {
