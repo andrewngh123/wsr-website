@@ -68,10 +68,11 @@ export default function RankedSportsPage({ params }: { params: { slug: string } 
             {WIDEST.sport.toLowerCase()} with{' '}
             {WIDEST.disciplines.length} disciplines to single-discipline sports such as chess, padel and sumo.
           </p>
-          <p className="text-sm text-gray-500">Search for a sport or discipline, or jump to a letter.</p>
         </section>
 
-        <RankedSportsExplorer sports={RANKED_SPORTS} />
+        <div className="max-w-4xl mx-auto">
+          <RankedSportsExplorer sports={RANKED_SPORTS} />
+        </div>
 
         {/* CTA back to the ranking itself */}
         <section className="my-14 rounded-3xl bg-wsr-navy text-white px-6 py-10 sm:px-10 text-center relative overflow-hidden">
