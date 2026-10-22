@@ -64,9 +64,8 @@ export default function RankedSportsPage({ params }: { params: { slug: string } 
         {/* Intro */}
         <section className="max-w-3xl mx-auto text-center mt-10 mb-8 space-y-3">
           <p className="text-gray-700 leading-relaxed">
-            Unlike the Olympic medal table, the WRCES looks at national teams’ results across{' '}
-            <strong className="text-wsr-navy">all sports</strong> — Olympic and non-Olympic alike. Below are the{' '}
-            {SPORT_COUNT} sports it ranks and their {DISCIPLINE_COUNT} disciplines, from {WIDEST.sport.toLowerCase()} with{' '}
+            Below are the {SPORT_COUNT} sports the WRCES ranks and their {DISCIPLINE_COUNT} disciplines, from{' '}
+            {WIDEST.sport.toLowerCase()} with{' '}
             {WIDEST.disciplines.length} disciplines to single-discipline sports such as chess, padel and sumo.
           </p>
           <p className="text-sm text-gray-500">Search for a sport or discipline, or jump to a letter.</p>
