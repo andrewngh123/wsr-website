@@ -44,6 +44,7 @@ export const MEDIA_RELEASES: MediaSource[] = [
   {
     source: "MENA Region",
     articles: [
+      { title: "Creating a fair and inclusive world sport ranking | Nadim Nassif | TEDxNDULouaize", link: "https://www.youtube.com/watch?v=7jloBprPpzQ", date: "2026-10-19", image: "https://i.ytimg.com/vi/7jloBprPpzQ/hqdefault.jpg" },
       { title: "حال الرياضة العالمية ‖ أودكاست مع د. نديم ناصيف ‖ كركول بيروت", link: "https://www.youtube.com/watch?v=zAQKAM5sN4U", date: "2026-10-10", image: "https://i.ytimg.com/vi/zAQKAM5sN4U/hqdefault.jpg" },
       { title: "هل اللبنانيون يتحرّكون بما يكفي؟ د. نديم ناصيف يكشف واقع النشاط البدني في لبنان", link: "https://www.youtube.com/watch?v=PtDqdtFCp40", date: "2026-09-16", image: "https://i.ytimg.com/vi/PtDqdtFCp40/hqdefault.jpg" },
       { title: "نديم ناصيف: ما هي الأبعاد الجيوسياسية لكرة القدم؟ • فرانس 24 / FRANCE 24", link: "https://www.youtube.com/watch?v=JI4r09ib1dg", date: "2026-06-13", image: "https://i.ytimg.com/vi/JI4r09ib1dg/hqdefault.jpg" },
