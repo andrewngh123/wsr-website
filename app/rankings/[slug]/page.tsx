@@ -6,6 +6,7 @@ import CountryFlag from '@/components/CountryFlag'
 import RankChange from '@/components/RankChange'
 import { getRankings, getLatestYear, type RankingType } from '@/lib/rankings'
 import { rankingStatus } from '@/lib/format'
+import { RANKED_SPORTS } from '@/lib/rankedSports'
 import { SITE_URL } from '@/lib/seo'
 
 export const revalidate = 3600 // refresh data hourly
@@ -145,6 +146,23 @@ export default async function RankingLandingPage({ params }: { params: { slug: s
             <p key={i} className="text-gray-700 leading-relaxed">{p}</p>
           ))}
         </section>
+
+        {/* WRCES only: the sports and disciplines it covers */}
+        {cfg.type === 'wrces' && (
+          <Link
+            href="/rankings/elite-sport/sports"
+            className="group flex items-center gap-4 bg-white rounded-2xl p-5 shadow-sm ring-1 ring-gray-100 border-l-4 border-wsr-accent hover:shadow-md transition-all"
+          >
+            <div className="shrink-0 w-12 h-12 rounded-xl bg-wsr-navy text-white grid place-items-center text-lg font-extrabold tabular-nums">
+              {RANKED_SPORTS.length}
+            </div>
+            <div className="flex-1">
+              <h2 className="font-bold text-wsr-navy">Ranked sports &amp; their disciplines</h2>
+              <p className="text-sm text-gray-500">See every sport and discipline counted in the WRCES.</p>
+            </div>
+            <span className="text-wsr-accent text-xl group-hover:translate-x-1 transition-transform" aria-hidden>→</span>
+          </Link>
+        )}
 
         {/* Ranking table */}
         {rows.length > 0 && (

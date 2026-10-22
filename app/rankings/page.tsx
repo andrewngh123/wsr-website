@@ -6,6 +6,7 @@ import CountryFlag from '@/components/CountryFlag'
 import RankChange from '@/components/RankChange'
 import PageHeader from '@/components/PageHeader'
 import { rankingStatus } from '@/lib/format'
+import { RANKED_SPORTS } from '@/lib/rankedSports'
 
 // ── Types ────────────────────────────────────────────────────────────────────
 type RankingType = 'wrces' | 'wfcr' | 'wspi' | 'merit'
@@ -186,6 +187,17 @@ export default function RankingsPage() {
             </button>
           ))}
         </div>
+
+        {activeTab === 'wrces' && (
+          <Link
+            href="/rankings/elite-sport/sports"
+            className="inline-flex items-center gap-2 -mt-2 mb-5 text-sm font-medium text-wsr-blue hover:text-wsr-navy group"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-wsr-accent" />
+            See the {RANKED_SPORTS.length} ranked sports &amp; their disciplines
+            <span className="group-hover:translate-x-0.5 transition-transform" aria-hidden>→</span>
+          </Link>
+        )}
 
         {/* Filters row */}
         <div className="flex flex-wrap gap-3 mb-6 items-center">

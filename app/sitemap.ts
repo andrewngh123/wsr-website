@@ -5,7 +5,7 @@ import { getAllCountryCodes } from '@/lib/rankings'
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const paths = [
     '', '/about', '/rankings', '/scientific-publications', '/media-release',
-    '/rankings/elite-sport', '/rankings/fittest-countries', '/rankings/sports-power-index', '/rankings/merit',
+    '/rankings/elite-sport', '/rankings/elite-sport/sports','/rankings/fittest-countries', '/rankings/sports-power-index', '/rankings/merit',
   ]
   const base: MetadataRoute.Sitemap = paths.map((p) => ({
     url: `${SITE_URL}${p}`,
