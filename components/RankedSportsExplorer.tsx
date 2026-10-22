@@ -41,7 +41,7 @@ export default function RankedSportsExplorer({ sports }: { sports: RankedSport[]
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search a sport or discipline — e.g. Futsal, BMX, Snooker…"
+          placeholder="Search a sport or discipline…"
           aria-label="Search sports and disciplines"
           className="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 text-sm bg-white text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-wsr-accent/50 focus:border-wsr-accent"
         />

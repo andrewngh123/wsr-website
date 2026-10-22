@@ -15,7 +15,6 @@ export function generateStaticParams() {
 const SPORT_COUNT      = RANKED_SPORTS.length
 const DISCIPLINE_COUNT = RANKED_SPORTS.reduce((n, s) => n + s.disciplines.length, 0)
 const MULTI_COUNT      = RANKED_SPORTS.filter((s) => s.disciplines.length > 1).length
-const WIDEST           = RANKED_SPORTS.reduce((a, b) => (b.disciplines.length > a.disciplines.length ? b : a))
 
 const TITLE = `Ranked Sports and their Disciplines — WRCES`
 const DESCRIPTION =
@@ -64,9 +63,7 @@ export default function RankedSportsPage({ params }: { params: { slug: string } 
         {/* Intro */}
         <section className="max-w-3xl mx-auto text-center mt-10 mb-8 space-y-3">
           <p className="text-gray-700 leading-relaxed">
-            Below are the {SPORT_COUNT} sports the WRCES ranks and their {DISCIPLINE_COUNT} disciplines, from{' '}
-            {WIDEST.sport.toLowerCase()} with{' '}
-            {WIDEST.disciplines.length} disciplines to single-discipline sports such as chess, padel and sumo.
+            Below are the {SPORT_COUNT} sports and their disciplines.
           </p>
         </section>
 
