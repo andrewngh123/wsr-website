@@ -14,7 +14,6 @@ export function generateStaticParams() {
 
 const SPORT_COUNT      = RANKED_SPORTS.length
 const DISCIPLINE_COUNT = RANKED_SPORTS.reduce((n, s) => n + s.disciplines.length, 0)
-const MULTI_COUNT      = RANKED_SPORTS.filter((s) => s.disciplines.length > 1).length
 
 const TITLE = `Ranked Sports and their Disciplines — WRCES`
 const DESCRIPTION =
@@ -26,12 +25,6 @@ export const metadata: Metadata = {
   alternates: { canonical: '/rankings/elite-sport/sports' },
   openGraph: { title: TITLE, description: DESCRIPTION, url: `${SITE_URL}/rankings/elite-sport/sports` },
 }
-
-const STATS = [
-  { value: SPORT_COUNT,      label: 'Sports ranked' },
-  { value: DISCIPLINE_COUNT, label: 'Disciplines' },
-  { value: MULTI_COUNT,      label: 'Multi-discipline' },
-]
 
 export default function RankedSportsPage({ params }: { params: { slug: string } }) {
   if (params.slug !== 'elite-sport') notFound()
@@ -50,16 +43,6 @@ export default function RankedSportsPage({ params }: { params: { slug: string } 
       </PageHeader>
 
       <div className="max-w-6xl mx-auto px-4">
-        {/* Headline numbers, overlapping the header */}
-        <div className="relative -mt-10 grid grid-cols-3 gap-3 sm:gap-4 max-w-3xl mx-auto">
-          {STATS.map((s) => (
-            <div key={s.label} className="bg-white rounded-2xl shadow-lg ring-1 ring-gray-100 px-3 py-4 sm:py-5 text-center border-b-4 border-wsr-accent">
-              <div className="text-2xl sm:text-4xl font-extrabold text-wsr-navy tabular-nums">{s.value}</div>
-              <div className="text-[11px] sm:text-xs uppercase tracking-wider text-gray-500 mt-1">{s.label}</div>
-            </div>
-          ))}
-        </div>
-
         {/* Intro */}
         <section className="max-w-3xl mx-auto text-center mt-10 mb-8 space-y-3">
           <p className="text-gray-700 leading-relaxed">
