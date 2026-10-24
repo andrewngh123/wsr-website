@@ -42,6 +42,12 @@ export const MEDIA_RELEASES: MediaSource[] = [
     ],
   },
   {
+    source: "TEDx",
+    articles: [
+      { title: "Creating a fair and inclusive world sport ranking | Nadim Nassif | TEDxNDULouaize", link: "https://www.youtube.com/watch?v=7jloBprPpzQ", date: "2026-10-19", image: "https://i.ytimg.com/vi/7jloBprPpzQ/hqdefault.jpg" },
+    ],
+  },
+  {
     source: "MENA Region",
     articles: [
       { title: "حال الرياضة العالمية ‖ أودكاست مع د. نديم ناصيف ‖ كركول بيروت", link: "https://www.youtube.com/watch?v=zAQKAM5sN4U", date: "2026-10-10", image: "https://i.ytimg.com/vi/zAQKAM5sN4U/hqdefault.jpg" },
@@ -127,12 +133,6 @@ export const MEDIA_RELEASES: MediaSource[] = [
     source: "Observatoire du Sport Business",
     articles: [
       { title: "Pourquoi le World Sport Rankings est utile pour le développement du sport africain ?", link: "https://www.youtube.com/watch?v=wFby09zPxTE", date: "2026-06-13", image: "https://images.ctfassets.net/urx0o1aho2r4/2PfkR8A2dxJutKN9YT5cF4/e0afdaaab4c123b982b1408db23d4dfd/WSR_LOGO.PNG" },
-    ],
-  },
-  {
-    source: "TEDx",
-    articles: [
-      { title: "Creating a fair and inclusive world sport ranking | Nadim Nassif | TEDxNDULouaize", link: "https://www.youtube.com/watch?v=7jloBprPpzQ", date: "2026-10-19", image: "https://i.ytimg.com/vi/7jloBprPpzQ/hqdefault.jpg" },
     ],
   },
   {
