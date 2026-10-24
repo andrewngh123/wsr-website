@@ -40,7 +40,7 @@ export interface FinalRankRow {
   entries_rank?: number | null
 }
 
-export type Tab = 'standings' | 'final' | 'country' | 'sport' | 'entries' | 'upload' | 'activity'
+export type Tab = 'standings' | 'final' | 'country' | 'sport' | 'entries' | 'upload' | 'activity' | 'traffic'
 
 /** Cross-tab navigation, e.g. clicking a country anywhere opens its history. */
 export interface Nav {

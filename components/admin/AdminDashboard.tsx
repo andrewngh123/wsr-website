@@ -11,6 +11,7 @@ import SportTab from './tabs/SportTab'
 import EntriesTab from './tabs/EntriesTab'
 import ActivityTab from './tabs/ActivityTab'
 import UploadTab from './tabs/UploadTab'
+import TrafficTab from './tabs/TrafficTab'
 import PasswordModal from './PasswordModal'
 
 const TABS: { key: Tab; label: string }[] = [
@@ -21,6 +22,7 @@ const TABS: { key: Tab; label: string }[] = [
   { key: 'entries',   label: 'Data & editing' },
   { key: 'upload',    label: 'Upload Excel' },
   { key: 'activity',  label: 'Activity' },
+  { key: 'traffic',   label: 'Website traffic' },
 ]
 
 export default function AdminDashboard({ user }: { user: { display_name: string } }) {
@@ -107,6 +109,7 @@ export default function AdminDashboard({ user }: { user: { display_name: string 
             {tab === 'sport' && <SportTab meta={meta} nav={nav} sport={sport.sport} year={sport.year} onChange={setSport} />}
             {tab === 'entries' && <EntriesTab meta={meta} nav={nav} initialFilters={entryFilters} />}
             {tab === 'activity' && <ActivityTab />}
+            {tab === 'traffic' && <TrafficTab />}
           </>
         )}
       </div>
