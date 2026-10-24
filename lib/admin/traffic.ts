@@ -100,8 +100,10 @@ async function query(startDay: string, endDay: string, groupBy?: string, limit =
   })
   if (!res.ok) {
     const detail = await res.json().catch(() => null) as { error?: { message?: string; issues?: { message?: string }[] } } | null
-    if (res.status === 401 || res.status === 403) throw new Error('Vercel refused the analytics request. Check VERCEL_API_TOKEN and VERCEL_TEAM_ID.')
     const why = detail?.error?.issues?.[0]?.message ?? detail?.error?.message
+    if (res.status === 401 || res.status === 403) {
+      throw new Error(`Vercel refused the analytics request (${res.status}${why ? `: ${why}` : ''}). Check VERCEL_API_TOKEN and VERCEL_TEAM_ID.`)
+    }
     throw new Error(`Vercel analytics request failed (${res.status}${why ? `: ${why}` : ''}).`)
   }
   const data = await res.json() as { series?: Series; summary?: Summary }
