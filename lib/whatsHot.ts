@@ -21,9 +21,8 @@ export interface HotItem {
 export const WHATS_HOT: HotItem[] = [
   {
     text:
-      'Germany enters the top 5 in the 2026 3rd provisional ranking, while the top 3 remain unchanged: ' +
-      'USA 1st, Spain 2nd, and France 3rd. 3 months to go before the final ranking. ' +
-      'Stay tuned for more!',
+      'USA still first and France replaced Spain in the 2nd position in the 2026 WRCES 4th provisional ranking. ' +
+      '2 months to go before the final ranking. Stay tuned for more!',
     href: '/rankings/elite-sport',
   },
 ]
