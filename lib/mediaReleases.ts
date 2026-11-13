@@ -42,6 +42,12 @@ export const MEDIA_RELEASES: MediaSource[] = [
     ],
   },
   {
+    source: "Meksi",
+    articles: [
+      { title: "Radikaali tapa mitata urheilua – onko Leijonien menestys arvokkaampaa kuin Norjan mitalisade talviolympialaisista?", link: "https://www.meksi.fi/a/9932179", date: "2026-11-07", image: "https://i.media.fi/incoming/qm9cyv/11765217.jpg/alternates/OG_IMAGE/11765217.jpg" },
+    ],
+  },
+  {
     source: "TEDx",
     articles: [
       { title: "Creating a fair and inclusive world sport ranking | Nadim Nassif | TEDxNDULouaize", link: "https://www.youtube.com/watch?v=7jloBprPpzQ", date: "2026-10-19", image: "https://i.ytimg.com/vi/7jloBprPpzQ/hqdefault.jpg" },
