@@ -5,14 +5,21 @@ import { api, apiUrl, qs } from '../api'
 import { Button, Card, Empty, ErrorNote, inputCls, LinkButton, Loading, numCls, rowCls, Stat, tableCls, tdCls, Th, theadCls } from '../ui'
 
 type Dimension = 'section' | 'page' | 'country' | 'referrer' | 'device' | 'os' | 'browser'
-interface Breakdown { label: string; views: number; share: number }
+interface Breakdown { label: string; views: number; share: number; users: number | null }
 
 /** Shape of /api/wsr-admin/traffic (see lib/admin/traffic.ts). */
 interface Report {
   start: string
   end: string
-  days: { day: string; views: number }[]
+  days: { day: string; views: number; users: number | null }[]
   total: number
+  users: {
+    total: number
+    avgPerDay: number
+    since: string
+    previous: { start: string; end: string; total: number } | null
+  } | null
+  usersNote: string | null
   avgPerDay: number
   peak: { day: string; views: number } | null
   previous: { start: string; end: string; total: number } | null
@@ -24,6 +31,8 @@ interface Report {
 
 /** Keep in step with TRACKING_START and RETENTION_DAYS in lib/admin/traffic.ts. */
 const TRACKING_START = '2026-10-07'
+/** Keep in step with GA4_START in lib/admin/ga4.ts. */
+const GA4_START = '2026-10-24'
 const RETENTION_DAYS = 31
 const DAY_MS = 86_400_000
 
@@ -88,6 +97,9 @@ export default function TrafficTab() {
   // The report on screen may be for a different range than the inputs show.
   const shown = report && report.start === start && report.end === end
   const change = report?.previous && report.previous.total > 0 ? report.total / report.previous.total - 1 : null
+  const uPrev = report?.users?.previous
+  const uChange = report?.users && uPrev && uPrev.total > 0 ? report.users.total / uPrev.total - 1 : null
+  const delta = (c: number) => <span className={c >= 0 ? 'text-green-600' : 'text-red-600'}>{c >= 0 ? '+' : '−'}{pct(Math.abs(c))}</span>
 
   return (
     <div className="space-y-5">
@@ -115,7 +127,7 @@ export default function TrafficTab() {
           ))}
         </div>
         <p className="text-xs text-gray-500 mt-3">
-          Page views from Vercel Web Analytics, counted in UTC days. On the current Vercel plan only the last {RETENTION_DAYS} days are available
+          Page views from Vercel Web Analytics, counted in UTC days. Users (distinct people) from Google Analytics, counted from {fmtDay(GA4_START, true)}. On the current Vercel plan only the last {RETENTION_DAYS} days are available
           (from {fmtDay(earliest(), true)}); analytics began on {fmtDay(TRACKING_START, true)}.
           Download PDF opens a print-ready copy; choose <strong>Save as PDF</strong> in the print dialog.
         </p>
@@ -132,12 +144,31 @@ export default function TrafficTab() {
             {!shown && <span className="ml-2 text-xs font-semibold text-wsr-accent align-middle">Dates changed — generate again to update</span>}
           </h2>
 
-          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
+          {!report.users && report.usersNote && (
+            <p className="rounded-lg border border-amber-200 bg-amber-50 text-amber-800 text-sm px-3 py-2">{report.usersNote}</p>
+          )}
+
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3">
+            <Stat
+              label="Users"
+              value={report.users ? report.users.total.toLocaleString() : '—'}
+              sub={!report.users ? 'Not available' : report.users.since > report.start ? `Distinct people since ${fmtDay(report.users.since)}` : 'Distinct people in this range'}
+            />
+            <Stat
+              label="Average users per day"
+              value={report.users ? report.users.avgPerDay.toLocaleString() : '—'}
+              sub={report.users && report.users.total > 0 ? `${(report.total / report.users.total).toFixed(1)} views per user` : undefined}
+            />
+            <Stat
+              label="Users vs previous period"
+              value={uChange == null ? '—' : delta(uChange)}
+              sub={uChange == null || !uPrev ? 'No earlier data to compare' : `${uPrev.total.toLocaleString()} users, ${fmtDay(uPrev.start)} – ${fmtDay(uPrev.end)}`}
+            />
             <Stat label="Page views" value={report.total.toLocaleString()} sub={`${report.days.length} day${report.days.length === 1 ? '' : 's'}`} />
             <Stat label="Average per day" value={report.avgPerDay.toLocaleString()} sub={report.peak ? `Peak ${report.peak.views.toLocaleString()} on ${fmtDay(report.peak.day)}` : undefined} />
             <Stat
-              label="Vs previous period"
-              value={change == null ? '—' : <span className={change >= 0 ? 'text-green-600' : 'text-red-600'}>{change >= 0 ? '+' : '−'}{pct(Math.abs(change))}</span>}
+              label="Views vs previous period"
+              value={change == null ? '—' : delta(change)}
               sub={change == null || !report.previous ? 'No earlier data in range' : `${report.previous.total.toLocaleString()} views, ${fmtDay(report.previous.start)} – ${fmtDay(report.previous.end)}`}
             />
             <Stat label="From search" value={pct(report.searchShare)} sub="Google, Bing and others" />
@@ -145,7 +176,7 @@ export default function TrafficTab() {
             <Stat label="On mobile" value={pct(report.mobileShare)} sub="Phones, not tablets" />
           </div>
 
-          <Card title="Page views per day">
+          <Card title={report.users ? 'Page views and users per day' : 'Page views per day'}>
             <DailyBars days={report.days} />
           </Card>
 
@@ -155,11 +186,12 @@ export default function TrafficTab() {
                 {report.breakdowns[b.key].length === 0 ? <Empty>No page views in this range.</Empty> : (
                   <div className="-mx-5 overflow-x-auto">
                     <table className={tableCls}>
-                      <thead className={theadCls}><tr><Th>{b.col}</Th><Th align="right">Views</Th><Th align="right">Share</Th></tr></thead>
+                      <thead className={theadCls}><tr><Th>{b.col}</Th>{withUsers(report.breakdowns[b.key]) && <Th align="right">Users</Th>}<Th align="right">Views</Th><Th align="right">Share</Th></tr></thead>
                       <tbody>
                         {report.breakdowns[b.key].map((r) => (
                           <tr key={r.label} className={rowCls}>
                             <td className={`${tdCls} break-all`}>{r.label}</td>
+                            {withUsers(report.breakdowns[b.key]) && <td className={numCls}>{r.users == null ? '—' : r.users.toLocaleString()}</td>}
                             <td className={numCls}>{r.views.toLocaleString()}</td>
                             <td className={numCls}>{pct(r.share, 1)}</td>
                           </tr>
@@ -172,7 +204,7 @@ export default function TrafficTab() {
             ))}
           </div>
           <p className="text-xs text-gray-500">
-            A page view is one load of one page, so these figures count views, not people. Breakdowns show the top entries only, so shares don&apos;t add up to 100%.
+            A page view is one load of one page. A user is one browser or device, counted once however many pages it views; ad-blockers hide some people from Google Analytics, so users are a slight undercount. Users per page, country and device come from Google Analytics; other breakdowns are views only. Breakdowns show the top entries only, so shares don&apos;t add up to 100%.
           </p>
         </div>
       )}
@@ -180,12 +212,14 @@ export default function TrafficTab() {
   )
 }
 
-/** Daily page views as bars; hover a bar for its date and count. */
+const withUsers = (rows: Breakdown[]) => rows.some((r) => r.users != null)
+
+/** Daily page views as bars, users as a line; hover a day for its numbers. */
 function DailyBars({ days }: { days: Report['days'] }) {
   const [hover, setHover] = useState<number | null>(null)
   if (days.length === 0) return <Empty>No data.</Empty>
   const W = 900, H = 220, L = 48, R = 8, T = 12, B = 24
-  const max = Math.max(1, ...days.map((d) => d.views))
+  const max = Math.max(1, ...days.map((d) => Math.max(d.views, d.users ?? 0)))
   const mag = 10 ** Math.floor(Math.log10(max / 4 || 1))
   const step = [1, 2, 2.5, 5, 10].map((m) => m * mag).find((s) => s >= max / 4) ?? max / 4
   const top = Math.ceil(max / step) * step
@@ -209,18 +243,39 @@ function DailyBars({ days }: { days: Report['days'] }) {
             <rect x={L + i * bw} y={T} width={bw} height={H - T - B} fill="transparent" />
             <rect
               x={L + i * bw + bw * 0.15} y={sy(d.views)} width={Math.max(1, bw * 0.7)} height={H - B - sy(d.views)}
-              rx={Math.min(3, bw * 0.35)} fill={hover === i ? '#e8a020' : '#1a3a6b'}
+              rx={Math.min(3, bw * 0.35)} fill={hover === i ? '#3f6fb5' : '#1a3a6b'}
             />
             {i % every === 0 && <text x={L + i * bw + bw / 2} y={H - 6} textAnchor="middle" fontSize={11} fill="#6b7280">{fmtDay(d.day)}</text>}
           </g>
         ))}
+        {(() => {
+          const x = (i: number) => L + i * bw + bw / 2
+          let path = '', pen = false
+          days.forEach((d, i) => {
+            if (d.users == null) { pen = false; return }
+            path += `${pen ? 'L' : 'M'}${x(i).toFixed(1)},${sy(d.users).toFixed(1)}`
+            pen = true
+          })
+          return path && (
+            <g pointerEvents="none">
+              <path d={path} fill="none" stroke="#e8a020" strokeWidth={2} strokeLinejoin="round" />
+              {days.map((d, i) => d.users != null && <circle key={d.day} cx={x(i)} cy={sy(d.users)} r={hover === i ? 4 : 2.5} fill="#e8a020" />)}
+            </g>
+          )
+        })()}
       </svg>
+      {days.some((d) => d.users != null) && (
+        <div className="flex gap-4 text-xs text-gray-500 mt-1">
+          <span className="flex items-center gap-1.5"><span className="inline-block w-3 h-3 rounded-sm" style={{ background: '#1a3a6b' }} />Page views</span>
+          <span className="flex items-center gap-1.5"><span className="inline-block w-3 h-0.5" style={{ background: '#e8a020' }} />Users</span>
+        </div>
+      )}
       {h && (
         <div
           className="pointer-events-none absolute top-0 -translate-x-1/2 rounded-lg bg-wsr-navy text-white text-xs px-2.5 py-1.5 shadow whitespace-nowrap"
           style={{ left: `${Math.min(90, Math.max(10, ((L + hover! * bw + bw / 2) / W) * 100))}%` }}
         >
-          <span className="text-white/70">{fmtDay(h.day, true)}</span> · <strong>{h.views.toLocaleString()}</strong> views
+          <span className="text-white/70">{fmtDay(h.day, true)}</span> · <strong>{h.views.toLocaleString()}</strong> views{h.users != null && <> · <strong>{h.users.toLocaleString()}</strong> users</>}
         </div>
       )}
     </div>

@@ -1,5 +1,6 @@
 import 'server-only'
 import { adminPath, ADMIN_INTERNAL_PATH } from './config'
+import { GA4_START, getGa4Users, isGa4Enabled, type Ga4Users } from './ga4'
 
 /**
  * Site traffic report — page views from Vercel Web Analytics for a date range,
@@ -11,7 +12,8 @@ import { adminPath, ADMIN_INTERNAL_PATH } from './config'
  *   VERCEL_TEAM_ID     team_…  (Team settings → General → Team ID)
  *   VERCEL_PROJECT_ID  prj_…   (wsr-website → Settings → General → Project ID)
  *
- * Only page views are available: the API rejects unique-visitor queries.
+ * Vercel only gives page views (its API rejects unique-visitor queries), so distinct
+ * users come from Google Analytics 4 instead (see ./ga4.ts) when it is configured.
  * Vercel's Hobby plan only serves the latest 31 days, so older ranges are refused.
  * Days are UTC. The hidden admin page is always left out of the breakdowns.
  */
@@ -30,13 +32,24 @@ export function isTrafficEnabled(): boolean {
 
 export type Dimension = 'section' | 'page' | 'country' | 'referrer' | 'device' | 'os' | 'browser'
 
-export interface Breakdown { label: string; views: number; share: number }
+/** `users` is null for dimensions GA4 can't match, or when users aren't available. */
+export interface Breakdown { label: string; views: number; share: number; users: number | null }
 
 export interface TrafficReport {
   start: string
   end: string
-  days: { day: string; views: number }[]
+  days: { day: string; views: number; users: number | null }[]
   total: number
+  /** Distinct users from GA4, or null with `usersNote` saying why. */
+  users: {
+    total: number
+    avgPerDay: number
+    /** First day users are counted from (GA4 began after Vercel). */
+    since: string
+    /** Same-length period before `start`, when GA4 covers all of it. */
+    previous: { start: string; end: string; total: number } | null
+  } | null
+  usersNote: string | null
   avgPerDay: number
   peak: { day: string; views: number } | null
   /** Same number of days immediately before `start`; null when Vercel no longer serves them. */
@@ -160,6 +173,7 @@ export async function getTrafficReport(start: string, end: string): Promise<Traf
   const prevStart = addDays(start, -span), prevEnd = addDays(start, -1)
   const comparable = prevStart >= earliestDay()
 
+  const ga4 = loadUsers(start, end, { start: prevStart, end: prevEnd })
   const [daily, prev, routes, paths, countries, referrers, devices, oses, browsers] = await Promise.all([
     query(start, end),
     comparable ? query(prevStart, prevEnd) : null,
@@ -171,11 +185,12 @@ export async function getTrafficReport(start: string, end: string): Promise<Traf
     query(start, end, 'osName', 8),
     query(start, end, 'browserName', 10),
   ])
+  const { users, note: usersNote } = await ga4
 
   // Every day in the range, zero-filled.
   const byDay = new Map(daily.series.map((s) => [s.timestamp.slice(0, 10), s.values.value]))
   const days: TrafficReport['days'] = []
-  for (let d = start; d <= end; d = addDays(d, 1)) days.push({ day: d, views: byDay.get(d) ?? 0 })
+  for (let d = start; d <= end; d = addDays(d, 1)) days.push({ day: d, views: byDay.get(d) ?? 0, users: users && d >= GA4_START ? users.byDay.get(d) ?? 0 : null })
   const total = days.reduce((t, d) => t + d.views, 0)
 
   // The hidden admin page must never appear in a report.
@@ -184,16 +199,19 @@ export async function getTrafficReport(start: string, end: string): Promise<Traf
     p === ADMIN_INTERNAL_PATH || p.startsWith(`${ADMIN_INTERNAL_PATH}/`) || (secret != null && (p === `/${secret}` || p.startsWith(`/${secret}/`)))
 
   /** Summary rows → labelled rows, merging rows that share a label. */
-  const rows = (s: Summary, key: string, label: (v: string) => string, keep: (v: string) => boolean = () => true, limit = 12) => {
-    const merged = new Map<string, number>()
+  const rows = (s: Summary, key: string, label: (v: string) => string, keep: (v: string) => boolean = () => true, limit = 12, usersBy?: Map<string, number>) => {
+    const merged = new Map<string, { views: number; users: number | null }>()
     for (const r of s) {
       const v = r.dimensions?.[key] ?? ''
       if (!keep(v)) continue
       const l = label(v)
-      merged.set(l, (merged.get(l) ?? 0) + r.values.value)
+      const m = merged.get(l) ?? { views: 0, users: usersBy ? 0 : null }
+      m.views += r.values.value
+      if (m.users != null) m.users += usersBy!.get(v) ?? 0
+      merged.set(l, m)
     }
     return [...merged.entries()]
-      .map(([l, views]) => ({ label: l, views, share: total ? views / total : 0 }))
+      .map(([l, m]) => ({ label: l, views: m.views, share: total ? m.views / total : 0, users: m.users }))
       .sort((a, b) => b.views - a.views)
       .slice(0, limit)
   }
@@ -205,6 +223,13 @@ export async function getTrafficReport(start: string, end: string): Promise<Traf
 
   return {
     start, end, days, total,
+    users: users && {
+      total: users.total,
+      avgPerDay: Math.round(days.filter((d) => d.users != null).reduce((t, d) => t + d.users!, 0) / Math.max(1, days.filter((d) => d.users != null).length)),
+      since: start < GA4_START ? GA4_START : start,
+      previous: users.previousTotal == null ? null : { start: prevStart, end: prevEnd, total: users.previousTotal },
+    },
+    usersNote,
     avgPerDay: days.length ? Math.round(total / days.length) : 0,
     peak,
     previous: prev ? { start: prevStart, end: prevEnd, total: prev.series.reduce((t, s) => t + s.values.value, 0) } : null,
@@ -213,14 +238,25 @@ export async function getTrafficReport(start: string, end: string): Promise<Traf
     mobileShare: total ? mobile / total : 0,
     breakdowns: {
       section: rows(routes.summary, 'route', (v) => SECTION_LABEL[v], (v) => v in SECTION_LABEL, 10),
-      page: rows(paths.summary, 'requestPath', (v) => v, (v) => !hidden(v), 15),
-      country: rows(countries.summary, 'country', countryLabel, () => true, 15),
+      page: rows(paths.summary, 'requestPath', (v) => v, (v) => !hidden(v), 15, users?.byPage),
+      country: rows(countries.summary, 'country', countryLabel, () => true, 15, users?.byCountry),
       referrer: rows(referrers.summary, 'referrerHostname', (v) => REFERRER_LABEL[v] ?? (v.endsWith('search.yahoo.com') ? 'Yahoo' : v), () => true, 12),
-      device: rows(devices.summary, 'deviceType', titleCase, (v) => v !== ''),
+      device: rows(devices.summary, 'deviceType', titleCase, (v) => v !== '', 12, users?.byDevice),
       os: rows(oses.summary, 'osName', (v) => v || 'Unknown', (v) => v !== '', 8),
       browser: rows(browsers.summary, 'browserName', (v) => v || 'Unknown', (v) => v !== '', 8),
     },
     generatedAt: new Date().toISOString(),
+  }
+}
+
+/** GA4 users, or why there are none. Never fails the report: views still show without users. */
+async function loadUsers(start: string, end: string, previous: { start: string; end: string } | null): Promise<{ users: Ga4Users | null; note: string | null }> {
+  if (!isGa4Enabled()) return { users: null, note: 'Users need Google Analytics: set GA4_PROPERTY_ID, GA4_CLIENT_EMAIL and GA4_PRIVATE_KEY in Vercel.' }
+  try {
+    const users = await getGa4Users(start, end, previous)
+    return users ? { users, note: null } : { users: null, note: `Users are counted from ${GA4_START}, when Google Analytics was added.` }
+  } catch (e) {
+    return { users: null, note: e instanceof Error ? e.message : 'Could not load users from Google Analytics.' }
   }
 }
 
@@ -237,6 +273,12 @@ const shortDay = (s: string) => parseDay(s).toLocaleDateString('en-GB', { day: '
 export function periodChange(r: TrafficReport): number | null {
   if (!r.previous || r.previous.total === 0) return null
   return r.total / r.previous.total - 1
+}
+
+/** Change in distinct users vs the previous period, or null. */
+export function usersChange(r: TrafficReport): number | null {
+  if (!r.users?.previous?.total) return null
+  return r.users.total / r.users.previous.total - 1
 }
 
 /** Static daily bar chart (print has no hover, so the peak is labelled). */
@@ -258,11 +300,25 @@ function barChartSvg(days: TrafficReport['days']) {
       <text x="${L - 8}" y="${sy(v) + 4}" text-anchor="end" font-size="11" fill="#6b7280">${n(v)}</text>`).join('')}
     ${days.map((d, i) => {
       const x = L + i * bw + bw * 0.15, w = Math.max(1, bw * 0.7)
-      return `<rect x="${x.toFixed(1)}" y="${sy(d.views).toFixed(1)}" width="${w.toFixed(1)}" height="${(H - B - sy(d.views)).toFixed(1)}" rx="${Math.min(3, w / 2).toFixed(1)}" fill="${d === peak ? '#e8a020' : '#1a3a6b'}"/>`
+      return `<rect x="${x.toFixed(1)}" y="${sy(d.views).toFixed(1)}" width="${w.toFixed(1)}" height="${(H - B - sy(d.views)).toFixed(1)}" rx="${Math.min(3, w / 2).toFixed(1)}" fill="${d === peak ? '#3f6fb5' : '#1a3a6b'}"/>`
     }).join('')}
     ${days.map((d, i) => i % every ? '' : `<text x="${(L + i * bw + bw / 2).toFixed(1)}" y="${H - 8}" text-anchor="middle" font-size="11" fill="#6b7280">${esc(shortDay(d.day))}</text>`).join('')}
     <text x="${(L + days.indexOf(peak) * bw + bw / 2).toFixed(1)}" y="${sy(peak.views) - 6}" text-anchor="middle" font-size="11" font-weight="600" fill="#0b1c3d">${n(peak.views)}</text>
+    ${usersLine(days, (i) => L + i * bw + bw / 2, sy)}
   </svg>`
+}
+
+/** Users per day as a line over the bars (days without GA4 data break the line). */
+function usersLine(days: TrafficReport['days'], x: (i: number) => number, y: (v: number) => number) {
+  let d = '', pen = false
+  days.forEach((day, i) => {
+    if (day.users == null) { pen = false; return }
+    d += `${pen ? 'L' : 'M'}${x(i).toFixed(1)},${y(day.users).toFixed(1)}`
+    pen = true
+  })
+  if (!d) return ''
+  const dots = days.map((day, i) => day.users == null ? '' : `<circle cx="${x(i).toFixed(1)}" cy="${y(day.users).toFixed(1)}" r="2.5" fill="#e8a020"/>`).join('')
+  return `<path d="${d}" fill="none" stroke="#e8a020" stroke-width="2" stroke-linejoin="round"/>${dots}`
 }
 
 const BREAKDOWNS: { key: Dimension; title: string; col: string; note: string }[] = [
@@ -279,14 +335,16 @@ export function trafficReportHtml(r: TrafficReport, autoPrint = false) {
   const change = periodChange(r)
   const stat = (label: string, value: string, sub = '') =>
     `<div class="stat"><div class="label">${esc(label)}</div><div class="value">${esc(value)}</div>${sub ? `<div class="sub">${esc(sub)}</div>` : ''}</div>`
+  const uChange = usersChange(r)
   const table = (b: (typeof BREAKDOWNS)[number]) => {
     const rows = r.breakdowns[b.key]
     const max = Math.max(1, ...rows.map((x) => x.views))
+    const withUsers = rows.some((x) => x.users != null)
     return `<div class="block">
       <h3>${esc(b.title)}</h3>${b.note ? `<p class="muted">${esc(b.note)}</p>` : ''}
       ${rows.length === 0 ? '<p class="muted">No page views in this range.</p>' : `<table>
-        <thead><tr><th>${esc(b.col)}</th><th class="n">Views</th><th class="n">Share</th></tr></thead>
-        <tbody>${rows.map((x) => `<tr><td>${esc(x.label)}<div class="bar" style="width:${((x.views / max) * 100).toFixed(1)}%"></div></td><td class="n">${n(x.views)}</td><td class="n">${pct(x.share)}</td></tr>`).join('')}</tbody>
+        <thead><tr><th>${esc(b.col)}</th>${withUsers ? '<th class="n">Users</th>' : ''}<th class="n">Views</th><th class="n">Share</th></tr></thead>
+        <tbody>${rows.map((x) => `<tr><td>${esc(x.label)}<div class="bar" style="width:${((x.views / max) * 100).toFixed(1)}%"></div></td>${withUsers ? `<td class="n">${x.users == null ? '—' : n(x.users)}</td>` : ''}<td class="n">${n(x.views)}</td><td class="n">${pct(x.share)}</td></tr>`).join('')}</tbody>
       </table>`}
     </div>`
   }
@@ -342,22 +400,25 @@ export function trafficReportHtml(r: TrafficReport, autoPrint = false) {
   </header>
 
   <section class="stats">
+    ${r.users ? stat('Users', n(r.users.total), r.users.since > r.start ? `Distinct people since ${shortDay(r.users.since)}` : 'Distinct people in this range') : stat('Users', '—', r.usersNote ?? '')}
+    ${stat('Average users per day', r.users ? n(r.users.avgPerDay) : '—', r.users ? `${(r.total / Math.max(1, r.users.total)).toFixed(1)} views per user` : '')}
+    <div class="stat"><div class="label">Users vs previous period</div><div class="value ${uChange == null ? '' : uChange >= 0 ? 'up' : 'down'}">${uChange == null ? '—' : `${uChange >= 0 ? '+' : '−'}${pct(Math.abs(uChange), 0)}`}</div><div class="sub">${uChange == null || !r.users?.previous ? 'No earlier data to compare' : `${n(r.users.previous.total)} users, ${esc(shortDay(r.users.previous.start))} – ${esc(shortDay(r.users.previous.end))}`}</div></div>
     ${stat('Page views', n(r.total), `${r.days.length} day${r.days.length === 1 ? '' : 's'}`)}
     ${stat('Average per day', n(r.avgPerDay), r.peak ? `Peak ${n(r.peak.views)} on ${shortDay(r.peak.day)}` : '')}
-    <div class="stat"><div class="label">Vs previous period</div><div class="value ${change == null ? '' : change >= 0 ? 'up' : 'down'}">${change == null ? '—' : `${change >= 0 ? '+' : '−'}${pct(Math.abs(change), 0)}`}</div><div class="sub">${change == null || !r.previous ? 'No earlier data to compare' : `${n(r.previous.total)} views, ${esc(shortDay(r.previous.start))} – ${esc(shortDay(r.previous.end))}`}</div></div>
+    <div class="stat"><div class="label">Views vs previous period</div><div class="value ${change == null ? '' : change >= 0 ? 'up' : 'down'}">${change == null ? '—' : `${change >= 0 ? '+' : '−'}${pct(Math.abs(change), 0)}`}</div><div class="sub">${change == null || !r.previous ? 'No earlier data to compare' : `${n(r.previous.total)} views, ${esc(shortDay(r.previous.start))} – ${esc(shortDay(r.previous.end))}`}</div></div>
     ${stat('From search engines', pct(r.searchShare, 0), 'Google, Bing, DuckDuckGo and others')}
     ${stat('No referrer', pct(r.directShare, 0), 'Typed URL, bookmark or app')}
     ${stat('On mobile', pct(r.mobileShare, 0), 'Phones, not tablets')}
   </section>
 
-  <h2>Page views per day</h2>
+  <h2>Page views${r.users ? ' and users' : ''} per day</h2>
   ${barChartSvg(r.days)}
-  <p class="muted">UTC days. The busiest day is highlighted.</p>
+  <p class="muted">Bars: page views (UTC days), busiest day in lighter blue.${r.users ? ' Orange line: distinct users per day (Google Analytics days).' : ''}</p>
 
   <h2>Breakdowns</h2>
   <div class="grid">${BREAKDOWNS.map(table).join('')}</div>
 
-  <p class="muted foot">Source: Vercel Web Analytics. A page view is one load of one page, so these figures count views, not people. Breakdowns list the top entries only, so shares do not add up to 100%. Analytics began on ${esc(longDay(TRACKING_START))}.</p>
+  <p class="muted foot">Sources: page views from Vercel Web Analytics; users from Google Analytics 4. A page view is one load of one page; a user is one browser or device, counted once however many pages it views. Ad-blockers hide some visitors from Google Analytics, so users are a slight undercount. Users are counted from ${esc(longDay(GA4_START))}. Breakdowns list the top entries only, so shares do not add up to 100%. Analytics began on ${esc(longDay(TRACKING_START))}.</p>
 </main>
 ${autoPrint ? '<script>window.addEventListener("load", () => setTimeout(() => window.print(), 300))</script>' : ''}
 </body></html>`
