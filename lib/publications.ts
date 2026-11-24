@@ -6,6 +6,7 @@ export type PubSection = { icon: string; heading: string; items: Pub[] }
 
 export const PUBLICATIONS: PubSection[] = [
   { icon: "📄", heading: "Papers in Scientific Journals", items: [
+    { citation: "Nassif, N., El-Khoury, J. R., Keyrouz, K., & Makendengue, R.-F. O. (2026). Measuring the perceptions of transfer of sports-based skills to the job market and their policy implications. Frontiers in Sports and Active Living, 8, 1980037.", link: "https://doi.org/10.3389/fspor.2026.1980037" },
     { citation: "Nassif, N., & El-Khoury, J. R. (2026). Understanding media's leverage in the national elite sport ecosystems. Frontiers in Sports and Active Living, 8, 1788596.", link: "https://doi.org/10.3389/fspor.2026.1788596" },
     { citation: "Nassif, N., & Millet, G. P. (2025). For a New World Ranking of Countries in Elite Sport-Correlation Between Competition Level and Bibliometrics in Olympic Sports. Frontiers in Sports and Active Living, 7, 1489652." },
     { citation: "Haiyan, H. U. A. N. G., & Weiyu, L. I. U. (2025). International Comparison and Implications of National Sports Power Evaluation Index System. Journal of Shanghai University of Sport, 49(3), 24-34." },
